@@ -4,6 +4,7 @@
       <img :src="imageUrl" v-if="imageUrl" />
       <pdf :src="isPdfUrl" v-if="isPdfUrl"></pdf>
     </div>
+    <!-- 遮罩(待用) -->
     <div class="isMask" v-if="isMask">2</div>
     <input @change="uploadFile($event)" type="file" ref="fileImage" />
     <!-- accept="application/pdf, image/jpeg, image/png"  -->
@@ -28,13 +29,13 @@ import pdf from "vue-pdf";
 export default {
   data() {
     return {
-      // 图片地址
+      // jpg/png图片地址
       imageUrl: "",
       // pdf图片地址
       isPdfUrl: "",
-      // 预览
+      // 预览pdf图片地址
       previewPdfUrl :'',
-      //文件对象
+      //上传文件对象
       fileData: {
         info: ""
       },
@@ -100,7 +101,7 @@ export default {
           }
         });
     },
-    // 遮罩显示
+    // 遮罩显示(待用)
     isleave() {
       this.isMask = false;
     },
@@ -109,7 +110,6 @@ export default {
     },
     // 预览
     previewImage() {
-      // this.$refs.fileImage.dispatchEvent(new MouseEvent("click"));
       this.dialogBigimg = true
       console.log(this.previewPdfUrl)
     },
