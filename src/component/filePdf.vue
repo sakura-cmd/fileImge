@@ -54,7 +54,7 @@ export default {
     },
     uploadFile(el) {
       // if (!el.target.files[0].size) return; // 如果文件大小为0，则返回
-      console.log(el.target.files[0]);
+      console.log(el);
       // 赋值给空对象
       this.fileData = el.target.files[0];
       this.fileData.info = el.target.files[0].name;
