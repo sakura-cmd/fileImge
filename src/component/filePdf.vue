@@ -34,7 +34,7 @@ export default {
       // pdf图片地址
       isPdfUrl: "",
       // 预览pdf图片地址
-      previewPdfUrl :'',
+      previewPdfUrl: "",
       //上传文件对象
       fileData: {
         info: ""
@@ -82,24 +82,18 @@ export default {
       console.log(this.formData);
     },
     // 文件上传
-    updaload() {
+    async updaload() {
       console.log(this.formData);
-      this.$https
-        .post("http://5df36567.ngrok.io/test/testUpload", this.formData)
-        .then(res => {
-          // 发送请求，保存图片
-          if (res.status === 200) {
-            // reader.readAsDataURL(el.target.files[0]); // 发起异步请求，读取文件
-            // reader.onload = function() {
-            //   // 文件读取完成后
-            //   // 读取完成后，将结果赋值给img的src
-            //   this.imageUrl = this.result;
-            // };
-            console.log("成功", res.data);
-          } else {
-            console.log("失败", res);
-          }
-        });
+      const res = await this.$https.post(
+        "https://5df36567.ngrok.io/test/testUpload",
+        this.formData
+      );  
+      // 发送请求，保存图片
+      if (res.status === 200) {
+        console.log("成功", res.data);
+      } else {
+        console.log("失败", res);
+      }
     },
     // 遮罩显示(待用)
     isleave() {
@@ -110,14 +104,14 @@ export default {
     },
     // 预览
     previewImage() {
-      this.dialogBigimg = true
-      console.log(this.previewPdfUrl)
+      this.dialogBigimg = true;
+      console.log(this.previewPdfUrl);
     },
     // 删除
     deleteImage() {
       this.imageUrl = "";
       this.isPdfUrl = "";
-      this.previewPdfUrl = ""
+      this.previewPdfUrl = "";
       this.fileData.info = "";
     }
   },
@@ -130,11 +124,12 @@ export default {
 
 <style lang = 'less' scoped>
 .imageFile {
-  width: 100%;
+  width: 320px;
   height: 500px;
-  margin-left: 200px;
-  margin-top: 100px;
+  /* margin-left: 200px;
+  margin-top: 100px; */
   position: relative;
+  float: left;
 
   input[type="file"] {
     display: none;
@@ -152,7 +147,7 @@ export default {
 
     img {
       width: 100%;
-      height: 100%;
+      height: 98%;
     }
   }
 
