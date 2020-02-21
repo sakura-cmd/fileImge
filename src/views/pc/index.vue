@@ -4,6 +4,14 @@
     <file-pdf></file-pdf>
     <!-- 展示 -->
     <show-img></show-img>
+    <show-img></show-img>
+    <show-img></show-img>
+    <show-img></show-img>
+    <show-img></show-img>
+    <show-img></show-img>
+    <show-img></show-img>
+    <show-img></show-img>
+    <show-img></show-img>
   </el-form>
 </template>
 
