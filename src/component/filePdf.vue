@@ -46,7 +46,7 @@
     <div class="delDialog" v-if="delDialog">
       <p class="delDialogTitle">您是否删除该已上传图片？</p>
       <div class="btn">
-        <span style="margin-right:14px; color:#AEAEAE;" @click="delDialog = false,iconIndex=-1">取消</span>
+        <span style="margin-right:14px; color:#AEAEAE; border: 1px solid rgba(239,244,255,1);" @click="delDialog = false,iconIndex=-1">取消</span>
         <span @click.stop="deleteImage" style="color: #fff; background:#0046FE;">确定</span>
       </div>
     </div>
@@ -342,10 +342,10 @@ export default {
     font-size: 12px;
     color: #515151;
     right: 0px;
-    bottom: -110px;
+    bottom: -88px;
     z-index: 999;
-    background: rgba(0, 0, 0, .8);
-    box-shadow: 0px 0px 8px 0px rgba(39, 59, 100, 0.19);
+    /* background: #ffffff; */
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAM4AAABeCAYAAABreSuHAAAEGUlEQVR4Xu3YzWoTcRSG8fdk0jQ1CdGCuPAqXIkU3KgI6h14F7oVFXHrZXgHKoi6EYq48ipciGAN+WiSZnJkQosW/MCXjKA+3WTRnv9kfj0PkzbEFwJ/scBolGcOQu+qW9hInet248OfuJ34ExfhGgjUIZCZjc9jPW9v6HJ1/vRAL092dDUilnVc79szCaduYc6vTWAwzjtFoQedTa32eDxTlqXu9jvxsLaLHh5MOHULc34tAsP9vLhMveq21WwcbvEypdFUi0boUm8rXtdyYcKpk5Wz6xQYDvP0oqF33U2dbRbHr7QopdFM75tLnev14mNd7+PYE2cwyfNLaUepXl0X5FwE1iBwpd3UTrv1/ZOmc2m60K6kF2u4lhQaNqTd/ol4e3TeKpxPmf2Y6HERutYsFHx+Wws3h9QlEFJ74+eHTw8k5XreQHXMolSWqWc5083t7RisGtkb55NWoetbLVHNeqw55R8TyJT259K81NNTnbgR1cezkN502woeNf/Yb5vbWatAFc9oqurlQuxN8tZmoUfV04YvBBD4uUD11JmVuh1747zXbur+j/7QAhIBBL4KHP7j4T7hsBUI/IYA4fwGFj+KwJEA4bALCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYLA13AmeWuz0KOtFigIIPArgf25NCt1OwaTPB/Sm25bEfGrMb6PwP8rkCmNpqpeLqxS2Rvnk1ah69VTh3j+38Xgzn8sUNVSPW3mpZ6e6sSNVTifMvsx0eMidK1Z0A4LhMC3AilpUSrL1LOc6eb2dgyOfTirPrYtpR2letAhgMChQGjYkHb7J+LtkckXeWE7sHvI0EoAAAAASUVORK5CYII=');
 
     .btn {
       width: 144px;
@@ -353,6 +353,7 @@ export default {
       margin: 8px auto;
       border-radius: 2px;
       cursor: pointer;
+      
       span {
         display: inline-block;
         width: 60px;
