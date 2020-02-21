@@ -28,7 +28,7 @@
       <!-- icon -->
       <span class="fileIcon">
         <i class="el-icon-folder-opened" @click.stop="uploadImg"></i>
-        <i class="el-icon-zoom-in" @click.stop="previewImage"></i>
+        <i class="el-icon-zoom-in" @click.stop="previewImage"  :class="previewIconIndex == 1 ? 'iconColor' : ''"></i>
         <i
           class="el-icon-delete"
           @click.stop="delDialog = true,iconIndex=1"
@@ -38,7 +38,7 @@
     </div>
     <!-- <el-button @click.stop.stop="updaload">上传到服务器</el-button> -->
     <!-- 未上传的图片预览 -->
-    <el-dialog :visible.sync="dialogBigimg" center :title="this.fileData.fileName">
+    <el-dialog :visible.sync="dialogBigimg" center :title="this.fileData.fileName" @close = 'closeDialog'>
       <img :src="imageUrl" v-if="imageUrl" />
       <pdf :src="previewPdfUrl" v-if="previewPdfUrl"></pdf>
     </el-dialog>
@@ -76,8 +76,9 @@ export default {
       dialogBigimg: false,
       // 删除显示隐藏
       delDialog: false,
-      // icon
+      // icon动态高亮
       iconIndex: -1,
+      previewIconIndex: -1,
       // 网络失败
       netWorkFail: false,
       netWorkFailUrl:
@@ -149,6 +150,7 @@ export default {
       this.dialogBigimg = true;
       this.delDialog = false;
       this.iconIndex = -1;
+      this.previewIconIndex = 1
       // console.log(this.previewPdfUrl);
     },
     // 删除
@@ -161,6 +163,10 @@ export default {
       this.iconIndex = -1;
       // 初始文件图片显示
       this.initialImg = true
+    },
+    // 关闭dialog回调
+    closeDialog(){
+      this.previewIconIndex = -1
     }
   },
   // 引入组件
@@ -252,6 +258,7 @@ export default {
       text-overflow: ellipsis;
       padding-left: 8px;
       box-sizing: border-box;
+      cursor: pointer;
     }
     .fileIcon {
       width: 90px;

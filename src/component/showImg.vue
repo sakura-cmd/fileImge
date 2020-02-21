@@ -25,11 +25,11 @@
       </el-tooltip>
       <!-- icon -->
       <span class="fileIcon">
-        <i class="el-icon-zoom-in" @click.stop="previewImage"></i>
+        <i class="el-icon-zoom-in" @click.stop="previewImage" :class="previewIconIndex == 1 ? 'iconColor' : ''"></i>
       </span>
     </div>
     <!-- 服务器图片预览 -->
-    <el-dialog :visible.sync="dialogBigimg" center :title="this.fileData.fileName">
+    <el-dialog :visible.sync="dialogBigimg" center :title="this.fileData.fileName" @close = 'closeDialog'>
       <img :src="showImageUrl" v-if="showImageUrl" />
       <!-- <pdf :src="showPdfUrl" v-if="showPdfUrl"></pdf> -->
       <iframe
@@ -50,7 +50,7 @@
 export default {
   data() {
     return {
-      // png文件展示
+      // png,jpg文件展示
       // showImageUrl:"",
       // showImageUrl: "http://118.24.25.176/3.png",
       showImageUrl: "http://118.24.25.176/2.jpeg",
@@ -59,6 +59,8 @@ export default {
       showPdfUrl: "",
       // 文件在线预览
       dialogBigimg: false,
+      // icon高亮
+      previewIconIndex: -1,
       // 文件对象
       fileData: {
         fileName: '文件名称'
@@ -83,6 +85,10 @@ export default {
   methods: {
     previewImage() {
       this.dialogBigimg = true;
+      this.previewIconIndex = 1
+    },
+    closeDialog(){
+      this.previewIconIndex = -1
     }
     // showImageFile() {
     //     console.log(1)
@@ -118,7 +124,7 @@ export default {
     height: 180px;
     background: rgba(252, 254, 255, 1);
     border-radius: 1px;
-    border: 1px dashed rgba(0, 70, 254, 1);
+    /* border: 1px dashed rgba(0, 70, 254, 1); */
     overflow: hidden;
     cursor: pointer;
 
@@ -181,6 +187,7 @@ export default {
       text-overflow: ellipsis;
       padding-left: 8px;
       box-sizing: border-box;
+      cursor: pointer;
     }
     .fileIcon {
       width: 90px;
