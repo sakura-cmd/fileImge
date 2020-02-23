@@ -1,6 +1,7 @@
 <template>
   <div class="showImgBox">
     <div class="fileImg" @click.stop="previewImage">
+      <!-- <img :src="fileDataList.url" v-if="fileDataList.url" /> -->
       <img :src="showImageUrl" v-if="showImageUrl" />
       <!-- <pdf :src="showPdfUrl" v-if="showPdfUrl"></pdf> -->
       <iframe
@@ -11,7 +12,6 @@
         type="application/pdf"
       ></iframe>
       <!-- 网速过慢,请重新刷新 -->
-      <!-- 网络请求失败 -->
       <div class="netWorkFail" v-if="netWorkFail">
         <img :src="netWorkFailUrl" alt />
         <p>网络请求失败，请重新刷新</p>
@@ -20,16 +20,25 @@
     <!-- 文件图片底部信息框 -->
     <div class="filebtm">
       <!-- 文字 -->
-      <el-tooltip :content="this.fileData.fileName" placement="top" effect="light">
-        <span class="fileName">{{this.fileData.fileName}}</span>
+      <el-tooltip :content="fileDataList.fileName" placement="top" effect="light">
+        <span class="fileName">{{fileDataList.fileName}}</span>
       </el-tooltip>
       <!-- icon -->
       <span class="fileIcon">
-        <i class="el-icon-zoom-in" @click.stop="previewImage" :class="previewIconIndex == 1 ? 'iconColor' : ''"></i>
+        <i
+          class="el-icon-zoom-in"
+          @click.stop="previewImage"
+          :class="previewIconIndex == 1 ? 'iconColor' : ''"
+        ></i>
       </span>
     </div>
     <!-- 服务器图片预览 -->
-    <el-dialog :visible.sync="dialogBigimg" center :title="this.fileData.fileName" @close = 'closeDialog'>
+    <el-dialog
+      :visible.sync="dialogBigimg"
+      center
+      :title="fileDataList.fileName"
+      @close="closeDialog"
+    >
       <img :src="showImageUrl" v-if="showImageUrl" />
       <!-- <pdf :src="showPdfUrl" v-if="showPdfUrl"></pdf> -->
       <iframe
@@ -48,32 +57,28 @@
 <script>
 // import pdf from "vue-pdf";
 export default {
+  props: ["fileDataList"],
   data() {
     return {
       // png,jpg文件展示
-      // showImageUrl:"",
-      // showImageUrl: "http://118.24.25.176/3.png",
-      showImageUrl: "http://118.24.25.176/2.jpeg",
-      // showImageUrl: "http://118.24.25.176/1.pdf",
+      showImageUrl: "",
       // pdf文件展示
       showPdfUrl: "",
       // 文件在线预览
       dialogBigimg: false,
       // icon高亮
       previewIconIndex: -1,
-      // 文件对象
-      fileData: {
-        fileName: '文件名称'
-      },
-       // 网络失败
+      // 网络失败
       netWorkFail: false,
       netWorkFailUrl:
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAZCAYAAAC7OJeSAAACDklEQVRIS8WWO4xNURSGvx+FUSiQ0GooNCTXMySCTqug8ChMYyS6CRJB5dUQTGGmGdEhOhJCSCQIglKnIRKRCILE45cl+8pxnHPvuePOtsqz11n/d9be6z9bALaXAUeAlcB74CKwX9KHWM8VSiB3gOkl0QfAaknfcsLcBNbVCG6VdCEnzCdgoEZwRNJQTpjXwNwawaOS9uWEOQ3srhA0sFTS45wwM4HrwPKCaIDslXQ8F0joKI32NGBzYbQv/UtHbC+U9LzXD/kF08+wPR94CmyRdLWX2n2FsR31bgFrgTfAEkkvmwL1G2YPcLIgHma6XtL3JkCNYGwPSPrcqaDtBcATYEYp77CkQ32BsT0PiPE+KGmsqqjtKcDdNADllOjKBkm3uwF17YztcWBbKnQFGJT0tljY9jBwrIPYK2CxpDhHtdERxvaq9MXFvCi8Q9KNZAuLgEcVP9qy6DVgo6TwsMqohbE9FXgYE1Hx5g/gFHAAiPa3um1BWh+WdGIiMPGDPNNFJLZrdkOQSPsKrJEU15O/orIztucA4aCzehBqmvoi+c+78gt1MKPAzqbVJ5B3WdKmrjDp5ncPiHGdzBiSNFIU+KMzyS/ux9VhMilS7S/ACknP2lplmEHgXAaQtkScy5akj/HgN4ztOKyxGIc3Z5yXtL0McxbYlZOioBUmOt6+XIWxhcGF0f2PiG1q/QSc8Kk+ZeMpewAAAABJRU5ErkJggg==",
-        // 站位
-        zhanwei: ''
+      // 站位
+      zhanwei: ""
     };
   },
   created() {
+    console.log(this.fileDataList)
+    this.showImageUrl = this.fileDataList.url;
     const fileUrlString = this.showImageUrl.substring(
       this.showImageUrl.length - 3
     );
@@ -85,20 +90,11 @@ export default {
   methods: {
     previewImage() {
       this.dialogBigimg = true;
-      this.previewIconIndex = 1
+      this.previewIconIndex = 1;
     },
-    closeDialog(){
-      this.previewIconIndex = -1
+    closeDialog() {
+      this.previewIconIndex = -1;
     }
-    // showImageFile() {
-    //     console.log(1)
-    //   this.$https.get("http://46bfd11e.ngrok.io/test/showfile").then(res => {
-    //     if (res.status == 200) {
-    //       console.log("服务器", res.data.data[0]);
-    //       this.showImageUrl = res.data.data[0];
-    //     }
-    //   });
-    // }
   }
   // 引入组件
   // components: {
@@ -137,7 +133,7 @@ export default {
       width: 100%;
       height: 300px;
     }
-    
+
     .netWorkFail {
       width: 100%;
       height: 178px;
