@@ -145,8 +145,6 @@ export default {
       formData: {},
       // 预览显示隐藏
       dialogBigimg: false,
-      // 删除显示隐藏
-      delDialog: false,
       // icon动态高亮
       iconIndex: -1,
       previewIconIndex: -1,
@@ -171,7 +169,6 @@ export default {
       if (!el.target.files[0].size) return; // 如果文件大小为0，则返回
       // console.log(el);
       // 删除高亮
-      this.delDialog = false;
       this.iconIndex = -1;
       // 初始文件图片隐藏
       this.initialImg = false;
@@ -219,7 +216,6 @@ export default {
     previewImage() {
       this.previewPdfUrl = this.isPdfUrl;
       this.dialogBigimg = true;
-      this.delDialog = false;
       this.iconIndex = -1;
       this.previewIconIndex = 1;
       // console.log(this.previewPdfUrl);
@@ -230,7 +226,6 @@ export default {
       this.isPdfUrl = "";
       this.previewPdfUrl = "";
       this.fileData.fileName = "";
-      this.delDialog = false;
       this.iconIndex = -1;
       // 初始文件图片显示
       this.initialImg = true;
@@ -351,7 +346,7 @@ export default {
         cursor: pointer;
         margin-right: 4px;
         outline: none;
-        
+
         &:hover {
           color: #3361ca;
         }
