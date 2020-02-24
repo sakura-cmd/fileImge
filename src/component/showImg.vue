@@ -1,47 +1,29 @@
 <template>
   <div>
-    <div
-      class="showImgBox"
-      v-for="(item,index) in fileDataList"
-      :key="index"
-    >
-      <div
-        class="fileImg"
-        @click.stop="previewImage(index)"
-      >
+    <div class="showImgBox" v-for="(item,index) in fileDataList" :key="index">
+      <div class="fileImg" @click.stop="previewImage(index)">
         <!-- <img :src="fileDataList.url" v-if="fileDataList.url" /> -->
-        <img
-          :src="item.url"
+        <!-- <img
+          :src="item.url.substring(item.url.length-3) !== 'pdf' ? item.url : ''"
           v-if="item.url"
-        />
+        /> -->
         <!-- <pdf :src="showPdfUrl" v-if="showPdfUrl"></pdf> -->
         <iframe
-          :src="item.url"
+          :src="item.url.substring(item.url.length-3) === 'pdf' ? item.url : ''"
           v-if="item.url"
           frameborder="0"
           class="isPdf"
-          type="application/pdf"
         ></iframe>
         <!-- 网速过慢,请重新刷新 -->
-        <div
-          class="netWorkFail"
-          v-if="netWorkFail"
-        >
-          <img
-            :src="netWorkFailUrl"
-            alt
-          />
+        <div class="netWorkFail" v-if="netWorkFail">
+          <img :src="netWorkFailUrl" alt />
           <p>网络请求失败，请重新刷新</p>
         </div>
       </div>
       <!-- 文件图片底部信息框 -->
       <div class="filebtm">
         <!-- 文字 -->
-        <el-tooltip
-          :content="item.fileName"
-          placement="top"
-          effect="light"
-        >
+        <el-tooltip :content="item.fileName" placement="top" effect="light">
           <span class="fileName">{{item.fileName}}</span>
         </el-tooltip>
         <!-- icon -->
@@ -54,16 +36,11 @@
         </span>
       </div>
       <!-- 服务器图片预览 -->
-      <el-dialog
-        :visible.sync="dialogBigimg"
-        center
-        :title="fileDataList.fileName"
-        @close="closeDialog"
-      >
-        <img
+      <el-dialog :visible.sync="dialogBigimg" center :title="showFileName" @close="closeDialog">
+        <!-- <img
           :src="showImageUrl"
           v-if="showImageUrl"
-        />
+        />-->
         <!-- <pdf :src="showPdfUrl" v-if="showPdfUrl"></pdf> -->
         <iframe
           :src="showPdfUrl"
@@ -81,6 +58,7 @@
 
 <script>
 // import pdf from "vue-pdf";
+
 export default {
   props: {
     fileDataList: {
@@ -94,11 +72,15 @@ export default {
     return {
       // png,jpg文件展示
       showImageUrl: "",
-      itemUrl:true,
+      itemUrl: true,
+      itemurlImg: "",
+      itemurlPdf: "",
       // pdf文件展示
       showPdfUrl: "",
       // 文件在线预览
       dialogBigimg: false,
+      // 文件名称
+      showFileName: "",
       // icon高亮
       previewIconIndex: -1,
       // 网络失败
@@ -111,11 +93,10 @@ export default {
   },
   created() {
     console.log(this.fileDataList);
-    for(let i = 0; i <=this.fileDataList.length-1; i++ ){
-
-      if(this.fileDataList[i].type === 'pdf'){
-         console.log(this.fileDataList[i].url)
-         this.showImageUrl = ''
+    for (let i = 0; i <= this.fileDataList.length - 1; i++) {
+      if (this.fileDataList[i].type === "pdf") {
+        console.log(this.fileDataList[i].url);
+        this.showImageUrl = "";
         //  this.itemUrl = ''
       }
     }
@@ -128,10 +109,12 @@ export default {
       return (this.showImageUrl = "");
     }
   },
+  mounted() {},
   methods: {
     previewImage(val) {
-      // this.showImageUrl = this.fileDataList[val].url
-      console.log(val)
+      this.showPdfUrl = this.fileDataList[val].url;
+      this.showFileName = this.fileDataList[val].fileName;
+      console.log(val);
       this.dialogBigimg = true;
       this.previewIconIndex = 1;
     },
