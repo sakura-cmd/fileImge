@@ -203,7 +203,7 @@ export default {
 
     img {
       width: 100%;
-      height: 174px;
+      height: 173px;
     }
 
     .initialImg,
