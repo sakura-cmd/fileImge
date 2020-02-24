@@ -322,13 +322,16 @@ export default {
     }
     .el-dialog__body {
       padding: 0 !important;
+      height: 426px;
+      overflow: auto;
 
       span:nth-child(1) {
-        margin-left: 25%;
+        /* margin-left: 25%; */
+        width: 580px;
       }
       img {
         width: 600px;
-        height: 426px;
+        /* height: 426px; */
       }
     }
   }
