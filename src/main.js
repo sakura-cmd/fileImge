@@ -15,6 +15,8 @@ Vue.prototype.$https = axios
 
 Vue.use(ElementUI)
 
+import './assets/bobalStyle.scss'
+
 Vue.config.productionTip = false
 
 new Vue({

@@ -13,9 +13,10 @@ export default {
     return {
       // 文件
       fileImages: {
-        url: "http://118.24.25.176/2.jpeg",
+        // url: '',
+        // url: "http://118.24.25.176/2.jpeg",
         // url: "http://118.24.25.176/3.png",
-        // url: "http://118.24.25.176/1.pdf",
+        url: "http://118.24.25.176/1.pdf",
         fileName: "一叶知秋"
       }
     };

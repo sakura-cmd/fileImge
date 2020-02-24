@@ -1,55 +1,126 @@
 <template>
-  <div class="fileBox">
-    <div class="imgShow" @click.stop="uploadImg">
+  <div
+    class="fileBox"
+    ref="fileBox"
+    id="fileBox"
+  >
+    <div
+      class="imgShow"
+      @click.stop="uploadImg"
+    >
       <!-- 上传文件初始图片 -->
-      <div class="initialImg" v-if="initialImg">
-        <img :src="initialImgUrl" alt />
+      <div
+        class="initialImg"
+        v-if="initialImg"
+      >
+        <img
+          :src="initialImgUrl"
+          alt
+        />
         <p>
           <span>点击选择图片</span>
         </p>
       </div>
       <!-- pgn jpg -->
-      <img :src="imageUrl" v-if="imageUrl" />
+      <img
+        :src="imageUrl"
+        v-if="imageUrl"
+      />
       <!-- pdf -->
-      <pdf :src="isPdfUrl" v-if="isPdfUrl"></pdf>
+      <pdf
+        :src="isPdfUrl"
+        v-if="isPdfUrl"
+      ></pdf>
       <!-- 网络请求失败 -->
-      <div class="netWorkFail" v-if="netWorkFail">
-        <img :src="netWorkFailUrl" alt />
+      <div
+        class="netWorkFail"
+        v-if="netWorkFail"
+      >
+        <img
+          :src="netWorkFailUrl"
+          alt
+        />
         <p>网络请求失败，请重新上传</p>
       </div>
     </div>
-    <input @change="uploadFile($event)" type="file" ref="fileImage" />
+    <input
+      @change="uploadFile($event)"
+      type="file"
+      ref="fileImage"
+    />
     <!-- 文件图片底部信息框 -->
     <div class="filebtm">
       <!-- 文字 -->
-      <el-tooltip :content="this.fileData.fileName" placement="top" effect="light">
+      <el-tooltip
+        :content="this.fileData.fileName"
+        placement="top"
+        effect="light"
+      >
         <span class="fileName">{{this.fileData.fileName}}</span>
       </el-tooltip>
       <!-- icon -->
       <span class="fileIcon">
-        <i class="el-icon-folder-opened" @click.stop="uploadImg"></i>
-        <i class="el-icon-zoom-in" @click.stop="previewImage"  :class="previewIconIndex == 1 ? 'iconColor' : ''"></i>
         <i
-          class="el-icon-delete"
-          @click.stop="delDialog = true,iconIndex=1"
-          :class="iconIndex == 1 ? 'iconColor' : ''"
+          class="el-icon-folder-opened"
+          @click.stop="uploadImg"
         ></i>
+        <i
+          class="el-icon-zoom-in"
+          @click.stop="previewImage"
+          :class="previewIconIndex == 1 ? 'iconColor' : ''"
+        ></i>
+        <el-popconfirm
+          confirmButtonText='确定'
+          cancelButtonText='取消'
+          icon="el-icon-info"
+          iconColor="red"
+          title="您是否删除该已上传图片？"
+          @onCancel="iconIndex = -1"
+          @onConfirm='deleteImage'
+        >
+          <i
+            class="el-icon-delete"
+            @click.stop="iconIndex=1"
+            :class="iconIndex == 1 ? 'iconColor' : ''"
+            slot="reference"
+          ></i>
+        </el-popconfirm>
       </span>
     </div>
     <!-- <el-button @click.stop.stop="updaload">上传到服务器</el-button> -->
     <!-- 未上传的图片预览 -->
-    <el-dialog :visible.sync="dialogBigimg" center :title="this.fileData.fileName" @close = 'closeDialog'>
-      <img :src="imageUrl" v-if="imageUrl" />
-      <pdf :src="previewPdfUrl" v-if="previewPdfUrl"></pdf>
+    <el-dialog
+      :visible.sync="dialogBigimg"
+      center
+      :title="this.fileData.fileName"
+      @close='closeDialog'
+    >
+      <img
+        :src="imageUrl"
+        v-if="imageUrl"
+      />
+      <pdf
+        :src="previewPdfUrl"
+        v-if="previewPdfUrl"
+      ></pdf>
     </el-dialog>
     <!-- 删除弹出框 -->
-    <div class="delDialog" v-if="delDialog">
+    <!-- <div
+      class="delDialog"
+      v-if="delDialog"
+    >
       <p class="delDialogTitle">您是否删除该已上传图片？</p>
       <div class="btn">
-        <span style="margin-right:14px; color:#AEAEAE; border: 1px solid rgba(239,244,255,1);" @click="delDialog = false,iconIndex=-1">取消</span>
-        <span @click.stop="deleteImage" style="color: #fff; background:#0046FE;">确定</span>
+        <span
+          style="margin-right:14px; color:#AEAEAE; border: 1px solid rgba(239,244,255,1);"
+          @click="delDialog = false,iconIndex=-1"
+        >取消</span>
+        <span
+          @click.stop="deleteImage"
+          style="color: #fff; background:#0046FE;"
+        >确定</span>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -103,7 +174,7 @@ export default {
       this.delDialog = false;
       this.iconIndex = -1;
       // 初始文件图片隐藏
-      this.initialImg = false
+      this.initialImg = false;
       // 赋值给空对象
       this.fileData = el.target.files[0];
       this.fileData.fileName = el.target.files[0].name;
@@ -150,7 +221,7 @@ export default {
       this.dialogBigimg = true;
       this.delDialog = false;
       this.iconIndex = -1;
-      this.previewIconIndex = 1
+      this.previewIconIndex = 1;
       // console.log(this.previewPdfUrl);
     },
     // 删除
@@ -162,11 +233,14 @@ export default {
       this.delDialog = false;
       this.iconIndex = -1;
       // 初始文件图片显示
-      this.initialImg = true
+      this.initialImg = true;
+    },
+    delCancel() {
+      this.iconIndex = -1;
     },
     // 关闭dialog回调
-    closeDialog(){
-      this.previewIconIndex = -1
+    closeDialog() {
+      this.previewIconIndex = -1;
     }
   },
   // 引入组件
@@ -267,6 +341,7 @@ export default {
       padding: 2px;
       box-sizing: border-box;
       padding-left: 13px;
+
       i {
         display: inline-block;
         width: 21px;
@@ -275,7 +350,8 @@ export default {
         color: #bbbbbb;
         cursor: pointer;
         margin-right: 4px;
-
+        outline: none;
+        
         &:hover {
           color: #3361ca;
         }
@@ -336,7 +412,7 @@ export default {
     }
   }
   /* 删除弹出框 */
-  .delDialog {
+  /* .delDialog {
     width: 206px;
     height: 95px;
     padding: 28px 31px 0 31px;
@@ -347,8 +423,7 @@ export default {
     right: -3px;
     bottom: -84px;
     z-index: 999;
-    /* background: #ffffff; */
-    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAM4AAABeCAYAAABreSuHAAAEGUlEQVR4Xu3YzWoTcRSG8fdk0jQ1CdGCuPAqXIkU3KgI6h14F7oVFXHrZXgHKoi6EYq48ipciGAN+WiSZnJkQosW/MCXjKA+3WTRnv9kfj0PkzbEFwJ/scBolGcOQu+qW9hInet248OfuJ34ExfhGgjUIZCZjc9jPW9v6HJ1/vRAL092dDUilnVc79szCaduYc6vTWAwzjtFoQedTa32eDxTlqXu9jvxsLaLHh5MOHULc34tAsP9vLhMveq21WwcbvEypdFUi0boUm8rXtdyYcKpk5Wz6xQYDvP0oqF33U2dbRbHr7QopdFM75tLnev14mNd7+PYE2cwyfNLaUepXl0X5FwE1iBwpd3UTrv1/ZOmc2m60K6kF2u4lhQaNqTd/ol4e3TeKpxPmf2Y6HERutYsFHx+Wws3h9QlEFJ74+eHTw8k5XreQHXMolSWqWc5083t7RisGtkb55NWoetbLVHNeqw55R8TyJT259K81NNTnbgR1cezkN502woeNf/Yb5vbWatAFc9oqurlQuxN8tZmoUfV04YvBBD4uUD11JmVuh1747zXbur+j/7QAhIBBL4KHP7j4T7hsBUI/IYA4fwGFj+KwJEA4bALCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYLA13AmeWuz0KOtFigIIPArgf25NCt1OwaTPB/Sm25bEfGrMb6PwP8rkCmNpqpeLqxS2Rvnk1ah69VTh3j+38Xgzn8sUNVSPW3mpZ6e6sSNVTifMvsx0eMidK1Z0A4LhMC3AilpUSrL1LOc6eb2dgyOfTirPrYtpR2letAhgMChQGjYkHb7J+LtkckXeWE7sHvI0EoAAAAASUVORK5CYII=');
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAM4AAABeCAYAAABreSuHAAAEGUlEQVR4Xu3YzWoTcRSG8fdk0jQ1CdGCuPAqXIkU3KgI6h14F7oVFXHrZXgHKoi6EYq48ipciGAN+WiSZnJkQosW/MCXjKA+3WTRnv9kfj0PkzbEFwJ/scBolGcOQu+qW9hInet248OfuJ34ExfhGgjUIZCZjc9jPW9v6HJ1/vRAL092dDUilnVc79szCaduYc6vTWAwzjtFoQedTa32eDxTlqXu9jvxsLaLHh5MOHULc34tAsP9vLhMveq21WwcbvEypdFUi0boUm8rXtdyYcKpk5Wz6xQYDvP0oqF33U2dbRbHr7QopdFM75tLnev14mNd7+PYE2cwyfNLaUepXl0X5FwE1iBwpd3UTrv1/ZOmc2m60K6kF2u4lhQaNqTd/ol4e3TeKpxPmf2Y6HERutYsFHx+Wws3h9QlEFJ74+eHTw8k5XreQHXMolSWqWc5083t7RisGtkb55NWoetbLVHNeqw55R8TyJT259K81NNTnbgR1cezkN502woeNf/Yb5vbWatAFc9oqurlQuxN8tZmoUfV04YvBBD4uUD11JmVuh1747zXbur+j/7QAhIBBL4KHP7j4T7hsBUI/IYA4fwGFj+KwJEA4bALCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYLA13AmeWuz0KOtFigIIPArgf25NCt1OwaTPB/Sm25bEfGrMb6PwP8rkCmNpqpeLqxS2Rvnk1ah69VTh3j+38Xgzn8sUNVSPW3mpZ6e6sSNVTifMvsx0eMidK1Z0A4LhMC3AilpUSrL1LOc6eb2dgyOfTirPrYtpR2letAhgMChQGjYkHb7J+LtkckXeWE7sHvI0EoAAAAASUVORK5CYII=");
 
     .btn {
       width: 144px;
@@ -356,7 +431,7 @@ export default {
       margin: 8px auto;
       border-radius: 2px;
       cursor: pointer;
-      
+
       span {
         display: inline-block;
         width: 60px;
@@ -366,6 +441,11 @@ export default {
         line-height: 20px;
       }
     }
-  }
+  } */
+}
+
+/deep/ .el-popover {
+  width: 206px;
+  height: 95px;
 }
 </style>

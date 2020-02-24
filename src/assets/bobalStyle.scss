@@ -1,0 +1,53 @@
+.el-popper {
+  width: 208px;
+  height: 95px;
+  padding: 28px 28px 0;
+  left: 50px !important;
+
+  .el-popconfirm__main {
+    font-size: 12px;
+    color: #515151;
+    margin-bottom: 8px;
+
+    i {
+      display: none;
+    }
+  }
+
+  &[x-placement^=top] {
+    // margin-bottom: 0px;
+
+    .popper__arrow {
+      left: 173px !important;
+      right: 18px;
+    }
+  }
+
+  &[x-placement^=bottom] {
+    // margin-top: 1px;
+
+    .popper__arrow {
+      left: 173px !important;
+      right: 18px;
+    }
+  }
+
+  .el-popconfirm__action {
+    text-align: center;
+
+    .el-button {
+      width: 60px;
+      height: 20px;
+      padding: 0;
+    }
+
+    .el-button--text {
+      border: 1px solid rgba(239, 244, 255, 1);
+      color: #AEAEAE;
+    }
+
+    .el-button--primary {
+      background-color: #0046FE;
+    }
+  }
+}
