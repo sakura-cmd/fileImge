@@ -21,6 +21,8 @@
           frameborder="0"
           class="isPdf"
           id="isPdf"
+          width="240px"
+          height="180px"
         ></iframe>
         <!-- <embed :src="item.url" v-if="item.url" width="800" height="600" ></embed> -->
         <!-- <pdf
@@ -88,23 +90,6 @@
 
 <script>
 // import pdf from "vue-pdf";
-// window.onload = function() {
-//   var test = document.getElementById("isPdf").contentWindow.document.getElementsByTagName("IMG");
-//     console.log(test)
-// };
-// function reinitIframe() {
-//   var iframe = document.getElementById("isPdf"); //id改为你的iframe的id
-//   try {
-//     var bHeight = iframe.contentWindow.document.body.scrollHeight;
-//     var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
-//     var height = Math.max(bHeight, dHeight);
-//     iframe.height = height;
-//   } catch (ex) {
-//     console.log(ex);
-//   }
-// }
-// window.setInterval("reinitIframe()", 240);
-
 export default {
   props: {
     fileDataList: {
@@ -141,7 +126,6 @@ export default {
     console.log(this.fileDataList);
     for (let i = 0; i <= this.fileDataList.length - 1; i++) {
       if (this.fileDataList[i].type === "pdf") {
-        console.log(this.fileDataList[i].url);
         this.showImageUrl = "";
         //  this.itemUrl = ''
       }
@@ -155,12 +139,27 @@ export default {
       return (this.showImageUrl = "");
     }
   },
-  mounted() {},
+  mounted() {
+    let iframe = document.getElementById("isPdf"); //通过id找到想要元素
+    let iwindow = iframe.contentWindow; //获取iframe的window对象
+    // 以下很是致命，切记：在iframe加载完毕才能拿到里面的所有document树(代码第五行)
+    let idoc = iwindow.document; //获取iframe的document
+    console.log(idoc)
+    // let img = idoc.body.getElementsByTagName("img")[0]; //搜索指定元素的后代，不包括自身，【0】第一个’img’
+    // console.log(img)
+    // img.width = iframe.clientWidth; //将iframe的宽赋值给图片，高也是一样
+    //很重要，必须放置在load函数里
+    //切记，坑深勿踩
+    iframe.addEventListener("load", function() {
+      let idoc = iwindow.document;
+      console.log("iwindow", iwindow);
+      console.log("idoc", idoc);
+    });
+  },
   methods: {
     previewImage(val) {
       this.showPdfUrl = this.fileDataList[val].url;
       this.showFileName = this.fileDataList[val].fileName;
-      console.log(val);
       this.dialogBigimg = true;
       this.previewIconIndex = 1;
     },
@@ -201,10 +200,10 @@ export default {
       height: 180px;
       float: left;
     }
-    .isPdf {
+    /* .isPdf {
       width: 100%;
       height: 100%;
-    }
+    } */
 
     .netWorkFail {
       width: 100%;
