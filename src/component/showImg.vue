@@ -1,29 +1,52 @@
 <template>
   <div>
-    <div class="showImgBox" v-for="(item,index) in fileDataList" :key="index">
-      <div class="fileImg" @click.stop="previewImage(index)">
+    <div
+      class="showImgBox"
+      v-for="(item,index) in fileDataList"
+      :key="index"
+    >
+      <div
+        class="fileImg"
+        @click.stop="previewImage(index)"
+      >
         <!-- <img :src="fileDataList.url" v-if="fileDataList.url" /> -->
         <!-- <img
           :src="item.url.substring(item.url.length-3) !== 'pdf' ? item.url : ''"
-          v-if="item.url"
+          v-if="itemurlPdf"
         /> -->
-        <!-- <pdf :src="showPdfUrl" v-if="showPdfUrl"></pdf> -->
+        <!-- :src="item.url.substring(item.url.length-3) === 'pdf' ? item.url : ''" -->
         <iframe
-          :src="item.url.substring(item.url.length-3) === 'pdf' ? item.url : ''"
+          :src="item.url"
           v-if="item.url"
           frameborder="0"
           class="isPdf"
+          id="isPdf"
         ></iframe>
+        <!-- <embed :src="item.url" v-if="item.url" width="800" height="600" ></embed> -->
+        <!-- <pdf
+        :src="item.url"
+        v-if="item.url"
+      ></pdf> -->
         <!-- 网速过慢,请重新刷新 -->
-        <div class="netWorkFail" v-if="netWorkFail">
-          <img :src="netWorkFailUrl" alt />
+        <div
+          class="netWorkFail"
+          v-if="netWorkFail"
+        >
+          <img
+            :src="netWorkFailUrl"
+            alt
+          />
           <p>网络请求失败，请重新刷新</p>
         </div>
       </div>
       <!-- 文件图片底部信息框 -->
       <div class="filebtm">
         <!-- 文字 -->
-        <el-tooltip :content="item.fileName" placement="top" effect="light">
+        <el-tooltip
+          :content="item.fileName"
+          placement="top"
+          effect="light"
+        >
           <span class="fileName">{{item.fileName}}</span>
         </el-tooltip>
         <!-- icon -->
@@ -36,12 +59,18 @@
         </span>
       </div>
       <!-- 服务器图片预览 -->
-      <el-dialog :visible.sync="dialogBigimg" center :title="showFileName" @close="closeDialog">
+      <el-dialog
+        :visible.sync="dialogBigimg"
+        center
+        :title="showFileName"
+        @close="closeDialog"
+      >
         <!-- <img
           :src="showImageUrl"
           v-if="showImageUrl"
         />-->
         <!-- <pdf :src="showPdfUrl" v-if="showPdfUrl"></pdf> -->
+
         <iframe
           :src="showPdfUrl"
           v-if="showPdfUrl"
@@ -51,6 +80,7 @@
           width="100%"
           height="100%"
         ></iframe>
+        <!-- <pdf :src="showPdfUrl" v-if="showPdfUrl"></pdf> -->
       </el-dialog>
     </div>
   </div>
@@ -58,6 +88,22 @@
 
 <script>
 // import pdf from "vue-pdf";
+// window.onload = function() {
+//   var test = document.getElementById("isPdf").contentWindow.document.getElementsByTagName("IMG");
+//     console.log(test)
+// };
+// function reinitIframe() {
+//   var iframe = document.getElementById("isPdf"); //id改为你的iframe的id
+//   try {
+//     var bHeight = iframe.contentWindow.document.body.scrollHeight;
+//     var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+//     var height = Math.max(bHeight, dHeight);
+//     iframe.height = height;
+//   } catch (ex) {
+//     console.log(ex);
+//   }
+// }
+// window.setInterval("reinitIframe()", 240);
 
 export default {
   props: {
@@ -157,7 +203,7 @@ export default {
     }
     .isPdf {
       width: 100%;
-      height: 300px;
+      height: 100%;
     }
 
     .netWorkFail {
