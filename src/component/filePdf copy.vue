@@ -5,38 +5,40 @@
     id="fileBox"
   >
     <div
-      v-for="(item,index) in fileHJ"
+      v-for="(item,index)
+      in
+      fileHJ"
       :key="index"
-      class="fileContainer"
     >
-      <span class="fileInfo-t">{{fileTitle[index]}}</span>
+      <p class="file_top">{{fileTitle[index]}}</p>
       <div
         class="imgShow"
-        @click.stop="uploadImg(index)"
+        @click.stop="uploadImg"
       >
-
         <!-- 上传文件初始图片 -->
         <div
           class="initialImg"
-          v-if="item.initialImg"
+          v-if="initialImg"
         >
           <img :src="initialImgUrl" />
           <p>
             <span>点击选择图片</span>
           </p>
         </div>
+        <!-- pgn jpg -->
         <img
-          v-if="item.data"
-          :src="item.data"
-        >
+          :src="imageUrl"
+          v-if="imageUrl"
+        />
+        <!-- pdf -->
         <pdf
-          v-if="item.pdfData"
-          :src="item.pdfData"
+          :src="isPdfUrl"
+          v-if="isPdfUrl"
         ></pdf>
         <!-- 网络请求失败 -->
         <div
           class="netWorkFail"
-          v-if="item.netWorkFail"
+          v-if="netWorkFail"
         >
           <img
             :src="netWorkFailUrl"
@@ -44,24 +46,85 @@
           />
           <p>网络请求失败，请重新上传</p>
         </div>
-        <input
-          type="file"
-          id="upLoad"
-          ref="fileImage"
-          @change.stop="uploadFile($event,index)"
-        >
       </div>
+      <input
+        @change="uploadFile($event)"
+        type="file"
+        ref="fileImage"
+      />
       <!-- 文件图片底部信息框 -->
       <div class="filebtm">
         <!-- 文字 -->
         <el-tooltip
-          :content="item.fileData.name"
+          :content="this.fileData.fileName"
           placement="top"
           effect="light"
         >
-          <span class="fileName">{{item.fileData.name}}</span>
+          <span class="fileName">{{this.fileData.fileName}}</span>
         </el-tooltip>
+        <!-- icon -->
+        <span class="fileIcon">
+          <i
+            class="el-icon-folder-opened"
+            @click.stop="uploadImg"
+          ></i>
+          <i
+            class="el-icon-zoom-in"
+            @click.stop="previewImage"
+            :class="previewIconIndex == 1 ? 'iconColor' : ''"
+          ></i>
+          <el-popconfirm
+            confirmButtonText='确定'
+            cancelButtonText='取消'
+            icon="el-icon-info"
+            iconColor="red"
+            title="您是否删除该已上传图片？"
+            @onCancel="iconIndex = -1"
+            @onConfirm='deleteImage'
+          >
+            <i
+              class="el-icon-delete"
+              @click.stop="iconIndex=1"
+              :class="iconIndex == 1 ? 'iconColor' : ''"
+              slot="reference"
+            ></i>
+          </el-popconfirm>
+        </span>
       </div>
+      <!-- <el-button @click.stop.stop="updaload">上传到服务器</el-button> -->
+      <!-- 未上传的图片预览 -->
+      <el-dialog
+        :visible.sync="dialogBigimg"
+        center
+        :title="this.fileData.fileName"
+        @close='closeDialog'
+      >
+        <img
+          :src="imageUrl"
+          v-if="imageUrl"
+        />
+        <pdf
+          :src="previewPdfUrl"
+          v-if="previewPdfUrl"
+        ></pdf>
+      </el-dialog>
+      <!-- 删除弹出框 -->
+      <!-- <div
+      class="delDialog"
+      v-if="delDialog"
+    >
+      <p class="delDialogTitle">您是否删除该已上传图片？</p>
+      <div class="btn">
+        <span
+          style="margin-right:14px; color:#AEAEAE; border: 1px solid rgba(239,244,255,1);"
+          @click="delDialog = false,iconIndex=-1"
+        >取消</span>
+        <span
+          @click.stop="deleteImage"
+          style="color: #fff; background:#0046FE;"
+        >确定</span>
+      </div>
+    </div> -->
     </div>
   </div>
 </template>
@@ -95,9 +158,9 @@ export default {
       // 文件大小
       size: 0,
       //上传文件对象
-      fileDatas: [
+      fileData: [
         {
-          fileName: ""
+          fileName: "123"
         }
       ],
       //存储的文件对象
@@ -118,41 +181,51 @@ export default {
       // 占空
       zhankong: "",
       // 文件合集
-      fileHJ: []
+      fileHJ:[]
     };
   },
-  created() {
-    this.fileHJ = this.fileArr;
-    // this.fileHJ.data =
-    // console.log(this.fileHJ);
+  created(){
+    this.fileHJ = this.fileArr
   },
   methods: {
     // 展示区域调用函数
-    uploadImg(i) {
-      this.$refs.fileImage[i].dispatchEvent(new MouseEvent("click"));
+    uploadImg() {
+      this.$refs.fileImage.dispatchEvent(new MouseEvent("click"));
     },
-    uploadFile(el, i) {
-      let fileCE = this.fileHJ,
-        reader = new FileReader();
+    uploadFile(el) {
+      // if (!el.target.files[0].size) return; // 如果文件大小为0，则返回
+      // console.log(el);
+      // 删除高亮
+      this.iconIndex = -1;
+      // 初始文件图片隐藏
+      this.initialImg = false;
       // 赋值给空对象
-      fileCE[i].fileData = el.target.files[0];
-      console.log(fileCE[i].fileData);
-      reader.readAsDataURL(el.target.files[0]);
-      reader.onloadstart = () => {
-        // 初始文件图片隐藏
-        fileCE[i].initialImg = false;
+      this.fileData = el.target.files[0];
+      this.fileData.fileName = el.target.files[0].name;
+      const that = this;
+      const reader = new FileReader(); // 创建读取文件对象
+      reader.readAsDataURL(el.target.files[0]); // 发起异步请求，读取文件
+      reader.onloadstart = function() {
+        // 判断是否是pdf文件
         if (el.target.files[0].type == "application/pdf") {
+          that.imageUrl = "";
           reader.onload = function() {
-            fileCE[i].pdfData = this.result;
-            fileCE[i].data = "";
+            that.isPdfUrl = this.result;
           };
         } else {
+          that.isPdfUrl = "";
+          that.previewPdfUrl = "";
           reader.onload = function() {
-            fileCE[i].data = this.result;
-            fileCE[i].pdfData = "";
+            that.imageUrl = this.result;
           };
         }
       };
+      // 把文件存起来
+      this.formData = new FormData(); // 创建一个formdata对象
+      this.formData.append("testFile", el.target.files[0]);
+      console.log("子组件", this.formData);
+      // 子组件把值给父组件
+      this.$emit("fileUpload", this.formData);
     },
     // 文件上传
     updaload() {
@@ -207,27 +280,23 @@ export default {
 <style lang = 'scss' scoped>
 .fileBox {
   width: 256px;
-  height: 261px;
+  height: 236px;
   background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 0px 8px 0px rgba(39, 59, 100, 0.19);
   border-radius: 1px;
+  padding: 8px;
   box-sizing: border-box;
   position: relative;
-  /* float: left; */
-  margin: 100px auto;
+  float: left;
 
   input[type="file"] {
     display: none;
   }
-
-  .fileContainer {
-    box-shadow: 0px 0px 8px 0px rgba(39, 59, 100, 0.19);
-    padding: 8px;
-  }
-  .fileInfo-t {
-    display: block;
-    margin-bottom: 8px;
-    color: #515151;
-    font-size: 12px;
+  .file_top {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
   }
   .imgShow {
     width: 240px;
@@ -255,7 +324,6 @@ export default {
       padding-top: 63px;
       box-sizing: border-box;
       color: #515151;
-      cursor: pointer;
 
       img {
         width: 35px;
@@ -271,7 +339,7 @@ export default {
     }
   }
   .filebtm {
-    width: 100%;
+    width: 240px;
     height: 32px;
     background: rgba(255, 255, 255, 1);
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.08);

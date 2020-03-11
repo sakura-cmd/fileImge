@@ -24,6 +24,7 @@
           width="240px"
           height="180px"
         ></iframe>
+          <!-- onload="this.height = isPdf.document.body.scrollHeight" -->
         <!-- <embed :src="item.url" v-if="item.url" width="800" height="600" ></embed> -->
         <!-- <pdf
         :src="item.url"
@@ -140,21 +141,21 @@ export default {
     }
   },
   mounted() {
-    let iframe = document.getElementById("isPdf"); //通过id找到想要元素
-    let iwindow = iframe.contentWindow; //获取iframe的window对象
-    // 以下很是致命，切记：在iframe加载完毕才能拿到里面的所有document树(代码第五行)
-    let idoc = iwindow.document; //获取iframe的document
-    console.log(idoc)
+    // let iframe = document.getElementById("isPdf"); //通过id找到想要元素
+    // let iwindow = iframe.contentWindow; //获取iframe的window对象
+    // // 以下很是致命，切记：在iframe加载完毕才能拿到里面的所有document树(代码第五行)
+    // let idoc = iwindow.document; //获取iframe的document
+    // console.log('id',idoc)
     // let img = idoc.body.getElementsByTagName("img")[0]; //搜索指定元素的后代，不包括自身，【0】第一个’img’
     // console.log(img)
-    // img.width = iframe.clientWidth; //将iframe的宽赋值给图片，高也是一样
-    //很重要，必须放置在load函数里
-    //切记，坑深勿踩
-    iframe.addEventListener("load", function() {
-      let idoc = iwindow.document;
-      console.log("iwindow", iwindow);
-      console.log("idoc", idoc);
-    });
+    // // img.width = iframe.clientWidth; //将iframe的宽赋值给图片，高也是一样
+    // //很重要，必须放置在load函数里
+    // //切记，坑深勿踩
+    // iframe.addEventListener("load", function() {
+    //   let idoc = iwindow.document;
+    //   console.log("iwindow", iwindow);
+    //   console.log("idoc", idoc);
+    // });
   },
   methods: {
     previewImage(val) {
@@ -166,7 +167,7 @@ export default {
     closeDialog() {
       this.previewIconIndex = -1;
     }
-  }
+  },
   // 引入组件
   // components: {
   //   pdf

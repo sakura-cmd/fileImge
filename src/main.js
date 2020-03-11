@@ -14,7 +14,7 @@ Vue.use(global)
 Vue.prototype.$https = axios
 
 Vue.use(ElementUI)
-
+// 引入样式
 import './assets/bobalStyle.scss'
 
 Vue.config.productionTip = false
