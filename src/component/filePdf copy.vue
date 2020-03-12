@@ -373,6 +373,7 @@ export default {
       padding: 2px;
       box-sizing: border-box;
       padding-left: 13px;
+      position: relative;
 
       i {
         display: inline-block;

@@ -1,8 +1,10 @@
+
+// 文件上传组件删除弹出框的样式
 .el-popper {
   width: 208px;
   height: 95px;
   padding: 28px 28px 0;
-  left: 50px !important;
+  margin-left: -158px;
 
   .el-popconfirm__main {
     font-size: 12px;

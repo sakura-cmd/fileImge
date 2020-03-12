@@ -1,66 +1,109 @@
 <template>
   <div
-    class="fileBox"
     ref="fileBox"
     id="fileBox"
   >
     <div
       v-for="(item,index) in fileHJ"
       :key="index"
-      class="fileContainer"
+      class="fileBox"
     >
-      <span class="fileInfo-t">{{fileTitle[index]}}</span>
-      <div
-        class="imgShow"
-        @click.stop="uploadImg(index)"
-      >
-
-        <!-- 上传文件初始图片 -->
+      <span class="fileInfo-t">{{fileTitle[index].name}}</span>
+      <div class="fileContainer">
         <div
-          class="initialImg"
-          v-if="item.initialImg"
+          class="imgShow"
+          @click.stop="uploadImg(index)"
         >
-          <img :src="initialImgUrl" />
-          <p>
-            <span>点击选择图片</span>
-          </p>
+          <!-- 上传文件初始图片 -->
+          <div
+            class="initialImg"
+            v-if="item.initialImg"
+          >
+            <img :src="initialImgUrl" />
+            <p>
+              <span>点击选择图片</span>
+            </p>
+          </div>
+          <img
+            v-if="item.data"
+            :src="item.data"
+          >
+          <pdf
+            v-if="item.pdfData"
+            :src="item.pdfData"
+          ></pdf>
+          <!-- 网络请求失败 -->
+          <div
+            class="netWorkFail"
+            v-if="item.netWorkFail"
+          >
+            <img
+              :src="netWorkFailUrl"
+              alt
+            />
+            <p>网络请求失败，请重新上传</p>
+          </div>
+          <input
+            type="file"
+            id="upLoad"
+            ref="fileImage"
+            @change.stop="uploadFile($event,index)"
+          >
         </div>
-        <img
-          v-if="item.data"
-          :src="item.data"
-        >
-        <pdf
-          v-if="item.pdfData"
-          :src="item.pdfData"
-        ></pdf>
-        <!-- 网络请求失败 -->
-        <div
-          class="netWorkFail"
-          v-if="item.netWorkFail"
+        <!-- 文件图片底部信息框 -->
+        <div class="filebtm">
+          <!-- 文字 -->
+          <el-tooltip
+            :content="item.fileData.name"
+            placement="top"
+            effect="light"
+          >
+            <span class="fileName">{{item.fileData.name}}</span>
+          </el-tooltip>
+          <!-- icon -->
+          <span class="fileIcon">
+            <i
+              class="el-icon-folder-opened"
+              @click.stop="uploadImg(index)"
+            ></i>
+            <i
+              class="el-icon-zoom-in"
+              @click.stop="previewImage(index)"
+              :class="previewIconIndex == index ? 'iconColor' : ''"
+            ></i>
+            <el-popconfirm
+              confirmButtonText='确定'
+              cancelButtonText='取消'
+              icon="el-icon-info"
+              iconColor="red"
+              title="您是否删除该已上传图片？"
+              @onCancel="iconIndex = -1"
+              @onConfirm='deleteImage(index)'
+            >
+              <i
+                class="el-icon-delete"
+                @click.stop="deleteIcon(index)"
+                :class="iconIndex == index ? 'iconColor' : ''"
+                slot="reference"
+              ></i>
+            </el-popconfirm>
+          </span>
+        </div>
+        <el-dialog
+          :visible.sync="dialogBigimg"
+          center
+          :title="item.fileData.name"
+          @close='closeDialog'
         >
           <img
-            :src="netWorkFailUrl"
-            alt
+            :src="item.data"
+            v-if="item.data"
           />
-          <p>网络请求失败，请重新上传</p>
-        </div>
-        <input
-          type="file"
-          id="upLoad"
-          ref="fileImage"
-          @change.stop="uploadFile($event,index)"
-        >
-      </div>
-      <!-- 文件图片底部信息框 -->
-      <div class="filebtm">
-        <!-- 文字 -->
-        <el-tooltip
-          :content="item.fileData.name"
-          placement="top"
-          effect="light"
-        >
-          <span class="fileName">{{item.fileData.name}}</span>
-        </el-tooltip>
+          <pdf
+            :src="item.pdfData"
+            v-if="item.pdfData"
+          ></pdf>
+        </el-dialog>
       </div>
     </div>
   </div>
@@ -86,22 +129,10 @@ export default {
   },
   data() {
     return {
-      // jpg/png图片地址
-      imageUrl: "",
-      // pdf图片地址
-      isPdfUrl: "",
-      // 预览pdf图片地址
-      previewPdfUrl: "",
       // 文件大小
       size: 0,
-      //上传文件对象
-      fileDatas: [
-        {
-          fileName: ""
-        }
-      ],
       //存储的文件对象
-      formData: [],
+      formData: null,
       // 预览显示隐藏
       dialogBigimg: false,
       // icon动态高亮
@@ -115,16 +146,14 @@ export default {
       initialImg: true,
       initialImgUrl:
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAZCAYAAAC7OJeSAAACWUlEQVRIS72WTUhUYRiFn3MnIlsUmFDbNrVok6CVUSDpzPSzLahFP4vcZNBOKghr1d+mqFxUG6OdRdAi9YoygmBiUi1n1yYJJAiTCtM5MTNW6ozzp8y7u9z3nPPc94XvuyJdce/Bvgk0gaYxPdRwldf6nnlfpdICyDCwYWmmxpjlAAnNVYkFEUsNAofyBgY6TZ+eVxHGP8A1+QPdRRhprybMF/DW/IG6Ragr1YOJ+gHyxZxAY6RGQk1UD+aINzFPCN77LzQNEugy/bpTLZB0jjJhzV7HBk6SSjVBMA28WNVEDnsnfUqW+yFZmLWsmLcDHzCnGNCbcqzXGMYiyhByMzDFnOoZ0udSgdYWJu5L2PcWhQ+zWS30aL4UoNJgmlzDqH4WNGzxDiJ+D2xcdpLfINT1tYE56m3MeQKpk349zWva6YBRj2TvtpyaJ1ArfUoUAyo+mZi7wWeyRnrFPG0M6usS46g7kG8XCJskot30aqoQUGGYmPdjj6CFIyDrNAk6R6iBzFPcuzDvwMsu2uWx6iXkGMgrAa0Mc8IRphnHrs8VKwXcB64BCXBDsRUsTLaDUHfLh4m6HflhkZD0uraUBgKY30gHCTWWT5N/Ms2uYz1JcG3JQaU3fmJW9ST0LWeReT3ifoJ9vnT/cjv1klDHi8Nkf0FHgaDciPL61U6orsWaZWtyQNRvEY3lGVfU/QtpH/36+Fe9FCbuNuzHFVlXJkoyqwYSmknL/8PEXUvKSURdZb6VqvSMUGeXwsT8CHyhUsvV6TKHaHd2Mq2uJ/A4EFmdacXqGQI1/AEZ+b+IurEAEwAAAABJRU5ErkJggg==",
-      // 占空
-      zhankong: "",
       // 文件合集
-      fileHJ: []
+      fileHJ: [],
+      //文件添加的合集
+      formDataList: []
     };
   },
   created() {
     this.fileHJ = this.fileArr;
-    // this.fileHJ.data =
-    // console.log(this.fileHJ);
   },
   methods: {
     // 展示区域调用函数
@@ -152,10 +181,25 @@ export default {
             fileCE[i].pdfData = "";
           };
         }
+        // 根据id进行识别认证
+        if (this.fileTitle[i].id === "sfzm") {
+          console.log("发送身份证验证请求");
+        }
       };
+      // // 把文件存起来
+      // this.formData = new FormData();
+      // let formDataList = [];
+      // formDataList.push(el.target.files[0]);
+      // // this.formData.append("testFile",formDataList);
+      // console.log("子组件", formDataList);
+
+      // 把所有子组件的文件赋值给父组件
+      this.updaload(el.target.files[0]);
     },
     // 文件上传
-    updaload() {
+    updaload(val) {
+      this.formDataList.push(val);
+      this.$emit("uploadFile", this.formDataList);
       // console.log(this.formData);
       // const res = await this.$https.post(
       //   "https://5df36567.ngrok.io/test/testUpload",
@@ -168,23 +212,27 @@ export default {
       //   console.log("失败", res);
       // }
     },
-    // 预览
-    previewImage() {
-      this.previewPdfUrl = this.isPdfUrl;
+    // 预览事件
+    previewImage(i) {
+      console.log(i);
+      this.previewIconIndex = i;
       this.dialogBigimg = true;
       this.iconIndex = -1;
-      this.previewIconIndex = 1;
-      // console.log(this.previewPdfUrl);
+      this.delDialog = false;
     },
-    // 删除
-    deleteImage() {
-      this.imageUrl = "";
-      this.isPdfUrl = "";
-      this.previewPdfUrl = "";
-      this.fileData.fileName = "";
+    deleteIcon(i) {
+      this.iconIndex = i;
+      this.delDialog = true;
+    },
+    // 删除事件
+    deleteImage(i) {
       this.iconIndex = -1;
+      this.delDialog = false;
       // 初始文件图片显示
-      this.initialImg = true;
+      this.fileHJ[i].initialImg = true;
+      this.fileHJ[i].data = "";
+      this.fileHJ[i].pdfData = "";
+      this.fileHJ[i].fileData = {};
     },
     delCancel() {
       this.iconIndex = -1;
@@ -194,9 +242,7 @@ export default {
       this.previewIconIndex = -1;
     }
   },
-  mounted() {
-    console.log(this.fileTitle);
-  },
+  mounted() {},
   // 引入组件
   components: {
     pdf
@@ -212,19 +258,22 @@ export default {
   border-radius: 1px;
   box-sizing: border-box;
   position: relative;
-  /* float: left; */
-  margin: 100px auto;
+  float: left;
+  margin: 100px 10px;
 
   input[type="file"] {
     display: none;
   }
 
   .fileContainer {
-    box-shadow: 0px 0px 8px 0px rgba(39, 59, 100, 0.19);
+    width: 256px;
+    height: 236px;
     padding: 8px;
+    box-shadow: 0px 0px 8px 0px rgba(39, 59, 100, 0.19);
   }
   .fileInfo-t {
     display: block;
+    height: 16px;
     margin-bottom: 8px;
     color: #515151;
     font-size: 12px;
@@ -305,6 +354,7 @@ export default {
       padding: 2px;
       box-sizing: border-box;
       padding-left: 13px;
+      position: relative;
 
       i {
         display: inline-block;
@@ -323,6 +373,10 @@ export default {
 
       .iconColor {
         color: #3361ca;
+      }
+      .el-popover::v-deep {
+        width: 206px;
+        height: 95px;
       }
     }
   }
@@ -375,41 +429,5 @@ export default {
       }
     }
   }
-  /* 删除弹出框 */
-  /* .delDialog {
-    width: 206px;
-    height: 95px;
-    padding: 28px 31px 0 31px;
-    position: absolute;
-    box-sizing: border-box;
-    font-size: 12px;
-    color: #515151;
-    right: -3px;
-    bottom: -84px;
-    z-index: 999;
-    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAM4AAABeCAYAAABreSuHAAAEGUlEQVR4Xu3YzWoTcRSG8fdk0jQ1CdGCuPAqXIkU3KgI6h14F7oVFXHrZXgHKoi6EYq48ipciGAN+WiSZnJkQosW/MCXjKA+3WTRnv9kfj0PkzbEFwJ/scBolGcOQu+qW9hInet248OfuJ34ExfhGgjUIZCZjc9jPW9v6HJ1/vRAL092dDUilnVc79szCaduYc6vTWAwzjtFoQedTa32eDxTlqXu9jvxsLaLHh5MOHULc34tAsP9vLhMveq21WwcbvEypdFUi0boUm8rXtdyYcKpk5Wz6xQYDvP0oqF33U2dbRbHr7QopdFM75tLnev14mNd7+PYE2cwyfNLaUepXl0X5FwE1iBwpd3UTrv1/ZOmc2m60K6kF2u4lhQaNqTd/ol4e3TeKpxPmf2Y6HERutYsFHx+Wws3h9QlEFJ74+eHTw8k5XreQHXMolSWqWc5083t7RisGtkb55NWoetbLVHNeqw55R8TyJT259K81NNTnbgR1cezkN502woeNf/Yb5vbWatAFc9oqurlQuxN8tZmoUfV04YvBBD4uUD11JmVuh1747zXbur+j/7QAhIBBL4KHP7j4T7hsBUI/IYA4fwGFj+KwJEA4bALCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYIA4bADCBgChGOgMYLA13AmeWuz0KOtFigIIPArgf25NCt1OwaTPB/Sm25bEfGrMb6PwP8rkCmNpqpeLqxS2Rvnk1ah69VTh3j+38Xgzn8sUNVSPW3mpZ6e6sSNVTifMvsx0eMidK1Z0A4LhMC3AilpUSrL1LOc6eb2dgyOfTirPrYtpR2letAhgMChQGjYkHb7J+LtkckXeWE7sHvI0EoAAAAASUVORK5CYII=");
-
-    .btn {
-      width: 144px;
-      height: 20px;
-      margin: 8px auto;
-      border-radius: 2px;
-      cursor: pointer;
-
-      span {
-        display: inline-block;
-        width: 60px;
-        height: 20px;
-        border-radius: 2px;
-        text-align: center;
-        line-height: 20px;
-      }
-    }
-  } */
-}
-
-/deep/.el-popover {
-  width: 206px;
-  height: 95px;
 }
 </style>

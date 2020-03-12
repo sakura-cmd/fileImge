@@ -6,12 +6,12 @@
     <!-- 上传 -->
     <file-pdf
       :fileTitle="fileName"
-      @fileUpload="fileUpload"
       :fileArr="formDataList"
+      @uploadFile="fileUpload"
       ref="filePdf"
     ></file-pdf>
     <!-- 展示 -->
-    <!-- <show-img :fileDataList="fileImages"></show-img> -->
+    <show-img :fileDataList="fileImages"></show-img>
     <el-button @click="upload">上传</el-button>
   </el-form>
 </template>
@@ -43,41 +43,39 @@ export default {
           type: "pdf"
         }
       ],
-      //文件名数组
-      // fileName: [{ name: "sfz" }, { name: "sfzfm" }, { name: "sfzzm" }],
-      fileName: ["身份证正面", "身份证反面", "营业执照"],
+      //文件名列表
+      fileName: [
+        { id: "sfzm", name: "身份证正面" },
+        { id: "sfzfm", name: "身份证反面" },
+        { id: "yyzh", name: "营业执照" }
+      ],
       //子组件的所有对象
       formDataList: []
     };
   },
   methods: {
-    fileUpload(data) {
-      console.log("父组件的值", data);
-      //  this.formDataList = this.formDataList.push(data);
+    fileUpload(val) {
+      this.formDataList = val;
     },
     upload() {
-      // console.log(123);
-      // this.$refs.filePdf.updaload();
-      // console.log('合集',this.formDataList);
+      console.log("接收子组件的所有的文件集合", this.formDataList);
     }
   },
   created() {
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 3; i++) {
       this.formDataList.push({
-        name:'',
-        //img
-        data:"",
+        //img图片base64
+        data: "",
         //pdf
-        pdfData:"",
+        pdfData: "",
         //初始化图片
         initialImg: true,
         // 网速加载失败
         netWorkFail: false,
         // 文件列表
-        fileData:''
+        fileData: ""
       });
     }
-    console.log(this.formDataList);
   }
 };
 </script>
