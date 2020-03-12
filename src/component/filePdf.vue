@@ -1,7 +1,7 @@
 <template>
   <div
     ref="fileBox"
-    id="fileBox"
+    class="uploadFile"
   >
     <div
       v-for="(item,index) in fileHJ"
@@ -92,16 +92,16 @@
         <el-dialog
           :visible.sync="dialogBigimg"
           center
-          :title="item.fileData.name"
+          :title="previewName"
           @close='closeDialog'
         >
           <img
-            :src="item.data"
-            v-if="item.data"
+            :src="previewImg"
+            v-if="previewImg"
           />
           <pdf
-            :src="item.pdfData"
-            v-if="item.pdfData"
+            :src="previewPdf"
+            v-if="previewPdf"
           ></pdf>
         </el-dialog>
       </div>
@@ -129,6 +129,11 @@ export default {
   },
   data() {
     return {
+      // 预览图片
+      previewImg: null,
+      previewPdf: null,
+      // 预览名字
+      previewName: null,
       // 文件大小
       size: 0,
       //存储的文件对象
@@ -147,7 +152,7 @@ export default {
       initialImgUrl:
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAZCAYAAAC7OJeSAAACWUlEQVRIS72WTUhUYRiFn3MnIlsUmFDbNrVok6CVUSDpzPSzLahFP4vcZNBOKghr1d+mqFxUG6OdRdAi9YoygmBiUi1n1yYJJAiTCtM5MTNW6ozzp8y7u9z3nPPc94XvuyJdce/Bvgk0gaYxPdRwldf6nnlfpdICyDCwYWmmxpjlAAnNVYkFEUsNAofyBgY6TZ+eVxHGP8A1+QPdRRhprybMF/DW/IG6Ragr1YOJ+gHyxZxAY6RGQk1UD+aINzFPCN77LzQNEugy/bpTLZB0jjJhzV7HBk6SSjVBMA28WNVEDnsnfUqW+yFZmLWsmLcDHzCnGNCbcqzXGMYiyhByMzDFnOoZ0udSgdYWJu5L2PcWhQ+zWS30aL4UoNJgmlzDqH4WNGzxDiJ+D2xcdpLfINT1tYE56m3MeQKpk349zWva6YBRj2TvtpyaJ1ArfUoUAyo+mZi7wWeyRnrFPG0M6usS46g7kG8XCJskot30aqoQUGGYmPdjj6CFIyDrNAk6R6iBzFPcuzDvwMsu2uWx6iXkGMgrAa0Mc8IRphnHrs8VKwXcB64BCXBDsRUsTLaDUHfLh4m6HflhkZD0uraUBgKY30gHCTWWT5N/Ms2uYz1JcG3JQaU3fmJW9ST0LWeReT3ifoJ9vnT/cjv1klDHi8Nkf0FHgaDciPL61U6orsWaZWtyQNRvEY3lGVfU/QtpH/36+Fe9FCbuNuzHFVlXJkoyqwYSmknL/8PEXUvKSURdZb6VqvSMUGeXwsT8CHyhUsvV6TKHaHd2Mq2uJ/A4EFmdacXqGQI1/AEZ+b+IurEAEwAAAABJRU5ErkJggg==",
       // 文件合集
-      fileHJ: [],
+      fileHJ: null,
       //文件添加的合集
       formDataList: []
     };
@@ -178,6 +183,7 @@ export default {
         } else {
           reader.onload = function() {
             fileCE[i].data = this.result;
+            this.previewImg = this.result;
             fileCE[i].pdfData = "";
           };
         }
@@ -214,11 +220,13 @@ export default {
     },
     // 预览事件
     previewImage(i) {
-      console.log(i);
       this.previewIconIndex = i;
       this.dialogBigimg = true;
       this.iconIndex = -1;
       this.delDialog = false;
+      this.previewPdf = this.fileHJ[i].pdfData;
+      this.previewImg = this.fileHJ[i].data;
+      this.previewName = this.fileHJ[i].fileData.name;
     },
     deleteIcon(i) {
       this.iconIndex = i;
@@ -251,181 +259,183 @@ export default {
 </script>
 
 <style lang = 'scss' scoped>
-.fileBox {
-  width: 256px;
-  height: 261px;
-  background: rgba(255, 255, 255, 1);
-  border-radius: 1px;
-  box-sizing: border-box;
-  position: relative;
-  float: left;
-  margin: 100px 10px;
-
-  input[type="file"] {
-    display: none;
-  }
-
-  .fileContainer {
+.uploadFile {
+  .fileBox {
     width: 256px;
-    height: 236px;
-    padding: 8px;
-    box-shadow: 0px 0px 8px 0px rgba(39, 59, 100, 0.19);
-  }
-  .fileInfo-t {
-    display: block;
-    height: 16px;
-    margin-bottom: 8px;
-    color: #515151;
-    font-size: 12px;
-  }
-  .imgShow {
-    width: 240px;
-    height: 180px;
-    background: rgba(252, 254, 255, 1);
+    height: 261px;
+    background: rgba(255, 255, 255, 1);
     border-radius: 1px;
-    border: 1px dashed rgba(0, 70, 254, 1);
-    overflow: auto;
-    cursor: pointer;
+    box-sizing: border-box;
+    position: relative;
+    float: left;
+    margin: 10px;
 
-    img {
-      width: 100%;
-      height: 173px;
+    input[type="file"] {
+      display: none;
     }
 
-    .initialImg,
-    .netWorkFail {
-      width: 100%;
-      height: 178px;
-      background: #e2e4e9;
-      border-radius: 1px;
-      float: left;
-      font-size: 12px;
-      text-align: center;
-      padding-top: 63px;
-      box-sizing: border-box;
+    .fileContainer {
+      width: 256px;
+      height: 236px;
+      padding: 8px;
+      box-shadow: 0px 0px 8px 0px rgba(39, 59, 100, 0.19);
+    }
+    .fileInfo-t {
+      display: block;
+      height: 16px;
+      margin-bottom: 8px;
       color: #515151;
+      font-size: 12px;
+    }
+    .imgShow {
+      width: 240px;
+      height: 180px;
+      background: rgba(252, 254, 255, 1);
+      border-radius: 1px;
+      border: 1px dashed rgba(0, 70, 254, 1);
+      overflow: auto;
       cursor: pointer;
 
       img {
-        width: 35px;
-        height: 25px;
+        width: 100%;
+        height: 173px;
       }
 
-      p {
-        margin-top: 25px;
-        span {
-          text-decoration: underline;
+      .initialImg,
+      .netWorkFail {
+        width: 100%;
+        height: 178px;
+        background: #e2e4e9;
+        border-radius: 1px;
+        float: left;
+        font-size: 12px;
+        text-align: center;
+        padding-top: 63px;
+        box-sizing: border-box;
+        color: #515151;
+        cursor: pointer;
+
+        img {
+          width: 35px;
+          height: 25px;
+        }
+
+        p {
+          margin-top: 25px;
+          span {
+            text-decoration: underline;
+          }
         }
       }
     }
-  }
-  .filebtm {
-    width: 100%;
-    height: 32px;
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.08);
-    border-radius: 4px;
-    margin-top: 8px;
-
-    span {
-      display: inline-block;
-      line-height: 32px;
-    }
-
-    .fileName {
-      float: left;
-      width: 150px;
+    .filebtm {
+      width: 100%;
       height: 32px;
-      font-size: 12px;
-      color: #414141;
-      line-height: 32px;
-      font-weight: 600;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      padding-left: 8px;
-      box-sizing: border-box;
-      cursor: pointer;
-    }
-    .fileIcon {
-      width: 90px;
-      height: 32px;
-      float: right;
-      padding: 2px;
-      box-sizing: border-box;
-      padding-left: 13px;
-      position: relative;
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+      margin-top: 8px;
 
-      i {
+      span {
         display: inline-block;
-        width: 21px;
-        height: 24px;
-        font-size: 20px;
-        color: #bbbbbb;
-        cursor: pointer;
-        margin-right: 4px;
-        outline: none;
+        line-height: 32px;
+      }
 
-        &:hover {
+      .fileName {
+        float: left;
+        width: 150px;
+        height: 32px;
+        font-size: 12px;
+        color: #414141;
+        line-height: 32px;
+        font-weight: 600;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        padding-left: 8px;
+        box-sizing: border-box;
+        cursor: pointer;
+      }
+      .fileIcon {
+        width: 90px;
+        height: 32px;
+        float: right;
+        padding: 2px;
+        box-sizing: border-box;
+        padding-left: 13px;
+        position: relative;
+
+        i {
+          display: inline-block;
+          width: 21px;
+          height: 24px;
+          font-size: 20px;
+          color: #bbbbbb;
+          cursor: pointer;
+          margin-right: 4px;
+          outline: none;
+
+          &:hover {
+            color: #3361ca;
+          }
+        }
+
+        .iconColor {
           color: #3361ca;
         }
-      }
-
-      .iconColor {
-        color: #3361ca;
-      }
-      .el-popover::v-deep {
-        width: 206px;
-        height: 95px;
-      }
-    }
-  }
-  /* 文件预览 */
-  /deep/.el-dialog {
-    width: 600px;
-    height: 450px;
-
-    .el-dialog__header {
-      width: 600px;
-      height: 24px;
-      background: rgba(35, 62, 72, 1);
-      padding: 0;
-
-      .el-dialog__title {
-        font-size: 12px;
-        padding: 0;
-        color: #ffffff;
-      }
-
-      .el-dialog__headerbtn {
-        top: 5px;
-        right: 12px;
-        border: 1px solid #fff;
-        border-radius: 50%;
-        width: 16px;
-        height: 16px;
-
-        .el-dialog__close {
-          color: #fff;
-          font-size: 10px;
-          position: absolute;
-          top: 2px;
-          right: 1px;
+        .el-popover::v-deep {
+          width: 206px;
+          height: 95px;
         }
       }
     }
-    .el-dialog__body {
-      padding: 0 !important;
-      height: 426px;
-      overflow: auto;
+    /* 文件预览 */
+    /deep/.el-dialog {
+      width: 600px;
+      height: 450px;
 
-      span:nth-child(1) {
-        /* margin-left: 25%; */
-        width: 580px;
-      }
-      img {
+      .el-dialog__header {
         width: 600px;
-        /* height: 426px; */
+        height: 24px;
+        background: rgba(35, 62, 72, 1);
+        padding: 0;
+
+        .el-dialog__title {
+          font-size: 12px;
+          padding: 0;
+          color: #ffffff;
+        }
+
+        .el-dialog__headerbtn {
+          top: 5px;
+          right: 12px;
+          border: 1px solid #fff;
+          border-radius: 50%;
+          width: 16px;
+          height: 16px;
+
+          .el-dialog__close {
+            color: #fff;
+            font-size: 10px;
+            position: absolute;
+            top: 2px;
+            right: 1px;
+          }
+        }
+      }
+      .el-dialog__body {
+        padding: 0 !important;
+        height: 426px;
+        overflow: auto;
+
+        span:nth-child(1) {
+          /* margin-left: 25%; */
+          width: 580px;
+        }
+        img {
+          width: 600px;
+          /* height: 426px; */
+        }
       }
     }
   }

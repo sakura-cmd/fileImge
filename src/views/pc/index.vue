@@ -28,19 +28,19 @@ export default {
           type: "pdf"
         },
         {
-          url: "http://118.24.25.176/2.jpeg",
-          fileName: "一叶知秋2",
-          type: "jpeg"
-        },
-        {
           url: "http://118.24.25.176/3.png",
           fileName: "一叶知秋3",
           type: "png"
         },
         {
           url: "http://118.24.25.176/1.pdf",
-          fileName: "一叶知秋4",
+          fileName: "一叶知秋1",
           type: "pdf"
+        },
+        {
+          url: "http://118.24.25.176/3.png",
+          fileName: "一叶知秋3",
+          type: "png"
         }
       ],
       //文件名列表
@@ -50,7 +50,8 @@ export default {
         { id: "yyzh", name: "营业执照" }
       ],
       //子组件的所有对象
-      formDataList: []
+      formDataList: [],
+      abc: ""
     };
   },
   methods: {
@@ -64,6 +65,8 @@ export default {
   created() {
     for (let i = 0; i < 3; i++) {
       this.formDataList.push({
+        //文件名
+        name: "",
         //img图片base64
         data: "",
         //pdf
@@ -80,5 +83,8 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.showFile,.uploadFile{
+  height: 300px;
+}
 </style>
