@@ -8,7 +8,7 @@
       :key="index"
       class="fileBox"
     >
-      <span class="fileInfo-t">{{fileTitle[index].name}}</span>
+      <span class="fileInfo-t">{{fileTitle[index].fileName}}</span>
       <div class="fileContainer">
         <div
           class="imgShow"
@@ -170,7 +170,7 @@ export default {
         reader = new FileReader();
       // 赋值给空对象
       fileCE[i].fileData = el.target.files[0];
-      console.log(fileCE[i].fileData);
+      // console.log(fileCE[i].fileData);
       reader.readAsDataURL(el.target.files[0]);
       reader.onloadstart = () => {
         // 初始文件图片隐藏

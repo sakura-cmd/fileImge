@@ -5,7 +5,7 @@
   >
     <!-- 上传 -->
     <file-pdf
-      :fileTitle="fileName"
+      :fileTitle="UploadFileName"
       :fileArr="formDataList"
       @uploadFile="fileUpload"
       ref="filePdf"
@@ -44,14 +44,13 @@ export default {
         }
       ],
       //文件名列表
-      fileName: [
-        { id: "sfzm", name: "身份证正面" },
-        { id: "sfzfm", name: "身份证反面" },
-        { id: "yyzh", name: "营业执照" }
+      UploadFileName: [
+        { id: "sfzm", fileName: "身份证正面" },
+        { id: "sfzfm", fileName: "身份证反面" },
+        { id: "yyzh", fileName: "营业执照" }
       ],
       //子组件的所有对象
       formDataList: [],
-      abc: ""
     };
   },
   methods: {
@@ -65,8 +64,6 @@ export default {
   created() {
     for (let i = 0; i < 3; i++) {
       this.formDataList.push({
-        //文件名
-        name: "",
         //img图片base64
         data: "",
         //pdf

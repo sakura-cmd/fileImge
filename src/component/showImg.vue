@@ -61,10 +61,12 @@
           :title="showFileName"
           @close="closeDialog"
         >
-          <img
-            :src="showImgUrl"
-            v-if="showImgUrl"
-          />
+          <div class="imgBox">
+            <img
+              :src="showImgUrl"
+              v-if="showImgUrl"
+            />
+            </div>
           <iframe
             :src="showPdfUrl"
             v-if="showPdfUrl"
@@ -137,7 +139,6 @@ export default {
 
 <style lang = "scss" scoped>
 .showFile {
-  
   .showFileContainer {
     width: 256px;
     height: 261px;
@@ -269,6 +270,7 @@ export default {
           height: 24px;
           background: rgba(35, 62, 72, 1);
           padding: 0;
+          line-height: 24px;
 
           .el-dialog__title {
             font-size: 12px;
@@ -295,14 +297,18 @@ export default {
         }
         .el-dialog__body {
           padding: 0 !important;
-          height: 100%;
+          height: 426px;
 
           span:nth-child(1) {
             margin-left: 25%;
           }
+          .imgBox{
+            width: 100%;
+            overflow: auto;
+          }
           img {
-            width: 600px;
-            height: 426px;
+            /* width: 600px; */
+            /* height: 426px; */
           }
         }
       }
