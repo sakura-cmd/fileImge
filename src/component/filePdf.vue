@@ -269,6 +269,7 @@ export default {
     position: relative;
     float: left;
     margin: 10px;
+    background: transparent;
 
     input[type="file"] {
       display: none;
@@ -279,6 +280,7 @@ export default {
       height: 236px;
       padding: 8px;
       box-shadow: 0px 0px 8px 0px rgba(39, 59, 100, 0.19);
+      box-sizing: border-box
     }
     .fileInfo-t {
       display: block;
