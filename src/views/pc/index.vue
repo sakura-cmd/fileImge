@@ -9,6 +9,7 @@
       :fileArr="formDataList"
       @uploadFile="fileUpload"
       ref="filePdf"
+      size='small'
     ></file-pdf>
     <!-- 展示 -->
     <show-img :fileDataList="fileImages"></show-img>
@@ -38,9 +39,9 @@ export default {
           type: "pdf"
         },
         {
-          url: "http://118.24.25.176/3.png",
+          url: "http://118.24.25.176/2.jpeg",
           fileName: "一叶知秋3",
-          type: "png"
+          type: "jpg"
         }
       ],
       //文件名列表

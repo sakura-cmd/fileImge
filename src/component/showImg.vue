@@ -176,11 +176,6 @@ export default {
           height: 180px;
           float: left;
         }
-        .isPdf {
-          /* margin-top: -180px;
-        float: left; */
-        }
-
         .netWorkFail {
           width: 100%;
           height: 178px;
@@ -305,10 +300,6 @@ export default {
           .imgBox{
             width: 100%;
             overflow: auto;
-          }
-          img {
-            /* width: 600px; */
-            /* height: 426px; */
           }
         }
       }

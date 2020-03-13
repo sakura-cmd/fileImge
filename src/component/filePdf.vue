@@ -1,7 +1,7 @@
 <template>
   <div
     ref="fileBox"
-    class="uploadFile"
+    :class="controlSize ? 'uploadFile': 'uploadFileSmall'"
   >
     <div
       v-for="(item,index) in fileHJ"
@@ -35,7 +35,7 @@
           <!-- 网络请求失败 -->
           <div
             class="netWorkFail"
-            v-if="item.netWorkFail"
+            v-if="netWorkFail"
           >
             <img
               :src="netWorkFailUrl"
@@ -125,6 +125,9 @@ export default {
       default() {
         return [];
       }
+    },
+    size: {
+      type: String
     }
   },
   data() {
@@ -134,8 +137,6 @@ export default {
       previewPdf: null,
       // 预览名字
       previewName: null,
-      // 文件大小
-      size: 0,
       //存储的文件对象
       formData: null,
       // 预览显示隐藏
@@ -146,19 +147,27 @@ export default {
       // 网络失败
       netWorkFail: false,
       netWorkFailUrl:
-        "data:image/png;base64iVBORw0KGgoAAAANSUhEUgAAACMAAAAZCAYAAAC7OJeSAAACDklEQVRIS8WWO4xNURSGvx+FUSiQ0GooNCTXMySCTqug8ChMYyS6CRJB5dUQTGGmGdEhOhJCSCQIglKnIRKRCILE45cl+8pxnHPvuePOtsqz11n/d9be6z9bALaXAUeAlcB74CKwX9KHWM8VSiB3gOkl0QfAaknfcsLcBNbVCG6VdCEnzCdgoEZwRNJQTpjXwNwawaOS9uWEOQ3srhA0sFTS45wwM4HrwPKCaIDslXQ8F0joKI32NGBzYbQv/UtHbC+U9LzXD/kF08+wPR94CmyRdLWX2n2FsR31bgFrgTfAEkkvmwL1G2YPcLIgHma6XtL3JkCNYGwPSPrcqaDtBcATYEYp77CkQ32BsT0PiPE+KGmsqqjtKcDdNADllOjKBkm3uwF17YztcWBbKnQFGJT0tljY9jBwrIPYK2CxpDhHtdERxvaq9MXFvCi8Q9KNZAuLgEcVP9qy6DVgo6TwsMqohbE9FXgYE1Hx5g/gFHAAiPa3um1BWh+WdGIiMPGDPNNFJLZrdkOQSPsKrJEU15O/orIztucA4aCzehBqmvoi+c+78gt1MKPAzqbVJ5B3WdKmrjDp5ncPiHGdzBiSNFIU+KMzyS/ux9VhMilS7S/ACknP2lplmEHgXAaQtkScy5akj/HgN4ztOKyxGIc3Z5yXtL0McxbYlZOioBUmOt6+XIWxhcGF0f2PiG1q/QSc8Kk+ZeMpewAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAAAyCAYAAADhna1TAAAEbklEQVRoQ+Wba8ilUxTHf//cL/ky5dK4J+aDO2XkkjA1uZRSk8u4TL5QNDJplCKXoknIJeYLSpGIciflkg+IyJ0vQxITikLuf/11znTe857LfvZ533HOede385619l7r9+5n7b3Xeo7oEtunAyuBo4FdgB+BD4DHgPsl/d5tM42f1Q7K9q7AI8DxAwL9AjhL0pvTCKMzpv/A2N4NeAPYsyDgrJjlkl4p0J1YlTaYV4eslO4AvweWSPphYiMf4rhaOeXJigBvkXRlhd1EmARM8sqKCm+/ARZLcoXt2JsEzFfA7pWe7iMpCXnqJGCSTLeujGzptO5QAbMR2LkSTBLwZ5W2Y20WMC8BJ1V4+TOwSNIfFbZjbxIwFwP3VHj6sKRzKuwmwiRgtgHyOOzVwOO/gIMlfdLAZqJU2we8pUBOsoFUIqsl3VGiOKk6nXelE1oXxUUDgslKWTPtUBL/JjD5YDtQrgLOBXJ/aksS7VPADdP8+HQuiBlg2l/Yzt+Tc9plhw3/9+5j+0BgmaTbNsfj2RPM5pi4yRy2twJS6jgIOE5SKgHzKpMC5jrgmhaJL4FDJaWANm8y9mBsH95aLVt2UHhc0pnzRqU7+c7nRDVjt85YbwPJL91ymaS7asYtsRnrFWP7ZmBtn0By+c0l9r2SQJvqjC0Y2zl0vg5sMSCoz4EjJOU4MacylmBsbwe8CxxQEO2Dks4v0GukMmdgbKeQvnEu2iu2c1a5vEEkqyQ90EB/qOqcgGkdCLPsd8ypWdKHQ2fuo2A77Zvc25r49gtwpKRPa+fttmsyed85bV8AtP9jv7US5p1N68G2dwDeB/atCDB2R0nK/CPLyGBs7wQkCeb60CkvABdK+rbUS9upC6U+VCvrJY1iv2neuQBzO7C6TyTpP10kaWh7xvYy4MVaIh12KyQ9Ouo4I4FpXeyye3SeSnv5tB64QtKvvb5srbrkpT1GDQj4CThM0oZRxhoVzMtA6jglkiphEvM73cq27wNWlQxSqPMWcKykPwv1Z6lVg7F9NvBQw4njaC6D6yT9E1vbpwJPNxynRP1WSWtKFHvpVIGxnW05W+PiyonTKz8PyDabR6izKFY55CyzdEhPk/RszYC1YNYBo/atUzb4CDimxvFCmyT/lCi+LtSv35VsL2mdNVI8mgR5DThR0t9NnG28YmxnS83WOklyvaRrmzjcCIztFIfyytmkSRL9yZKyixZJMRjb2wNpsJW8dVU0+WZWymsrh0j6rmTeJmBuBK4uGXSMdZ4HTim5wxWBsb1fa1st7VSOMRvWSsquOlBKwTwT0sMGm5Dv000d2oIZCmaEd/TGmdPQFsxAMLa3bR3Cauoj4wwmvg1swQwDk3tNml3TKpdKurtXcH3B2N4b+BhIYXpapW8LZhCYJ4AzppVIR1w9WzD93nZYDjy3AKC0Q5zVgpkFxnZebc2vTfZfQGAS6owWTC8weXHopgUGJeHOaMHMAGM7b4inAJU2xkKUTS2YbjC1vyuYJoj3SrrkXw1uU0K7wungAAAAAElFTkSuQmCC",
       // 初始化图片
       initialImg: true,
       initialImgUrl:
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAZCAYAAAC7OJeSAAACWUlEQVRIS72WTUhUYRiFn3MnIlsUmFDbNrVok6CVUSDpzPSzLahFP4vcZNBOKghr1d+mqFxUG6OdRdAi9YoygmBiUi1n1yYJJAiTCtM5MTNW6ozzp8y7u9z3nPPc94XvuyJdce/Bvgk0gaYxPdRwldf6nnlfpdICyDCwYWmmxpjlAAnNVYkFEUsNAofyBgY6TZ+eVxHGP8A1+QPdRRhprybMF/DW/IG6Ragr1YOJ+gHyxZxAY6RGQk1UD+aINzFPCN77LzQNEugy/bpTLZB0jjJhzV7HBk6SSjVBMA28WNVEDnsnfUqW+yFZmLWsmLcDHzCnGNCbcqzXGMYiyhByMzDFnOoZ0udSgdYWJu5L2PcWhQ+zWS30aL4UoNJgmlzDqH4WNGzxDiJ+D2xcdpLfINT1tYE56m3MeQKpk349zWva6YBRj2TvtpyaJ1ArfUoUAyo+mZi7wWeyRnrFPG0M6usS46g7kG8XCJskot30aqoQUGGYmPdjj6CFIyDrNAk6R6iBzFPcuzDvwMsu2uWx6iXkGMgrAa0Mc8IRphnHrs8VKwXcB64BCXBDsRUsTLaDUHfLh4m6HflhkZD0uraUBgKY30gHCTWWT5N/Ms2uYz1JcG3JQaU3fmJW9ST0LWeReT3ifoJ9vnT/cjv1klDHi8Nkf0FHgaDciPL61U6orsWaZWtyQNRvEY3lGVfU/QtpH/36+Fe9FCbuNuzHFVlXJkoyqwYSmknL/8PEXUvKSURdZb6VqvSMUGeXwsT8CHyhUsvV6TKHaHd2Mq2uJ/A4EFmdacXqGQI1/AEZ+b+IurEAEwAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEQAAAAyCAYAAADlaH1uAAAFhUlEQVRoQ91aW2xUVRRd6w4UUgjKe2YosUR8JMYACoikRmpUEhKNREBFQlKkc0fUmKhRPyBBxQ9MMMYH9raEGjUaiokkSjQqqEHwBdGAEkHEKu3MoBZ8QGiBzjLTUmhpp/ecYSi3na9J7tp7r73O2eece88m2v0kEWsid6KZC0BNATgCUAOA7aDzFsrr15FUe5u+9p9tCWltdCxOpNdLuC5bkiR3oGDAHJbV1vY1IdryaRFEVWOKkG7+WkLUL1ESB1EwcFpfFaVVEC+yVdJ0PzFOq0huRywxtS+WD+VF75DS75qKcWZqOXcznlhnaxd0PFURWS9oji1REu/RTd1uaxd0POVFDkgqsiVK8k+6yVG2dkHHZwRpklRgS5SEEIv3I5enbW2DjKcqwgcFWI80gX8ZT10U5ORy4ZYRZJOAm2yNCW5lPFliaxd0PFUZXqI0XrElSvBRxpPP29oFHU9VFw9EU9NeQWNNyRJIoXDUeC7cedTUprfg2g5mJYA2S+jvR5zASYRCM1lev9kP2xufn3mX8SK3Algn6eJsiZD4DwjdQ7d+Y29M1oTzaUEyYFWNG430saUA75I08syplA0ga9AvtIL3HUiYOO6tmA6CtCWhmrkhHP6qGNAIhNCAIdf/ynnrmy9Uki2fJSqjL6BgwBMsq208nzy6FOR8BszFt7zw/RJWk86rdBNLcvFhahN4QVRdXIymxl0CBmeSIp3ZdBMbTBO0xQVakJZS8SKftD84kjyE/pzIRYkDtsma4IMtSJZDI8EtGFZSej7WtcAKcnapnD26pPMU3cRyk1G3wQRSkNZdJbJJQmk3Z6JmOCxleXKLTcJ+2GAKYvh+RbIOodAELq475Jeo6fO8CaI1ReO5uG6faeBsOFVdMg7NTTvbdhU/fyQ30E3O9sOZPs+LIHr90lE4dnQvgA+Awjjd/f+YEmiPMymVrvzSwQOMpVbnErPT2pQPJ/LCayWUtZwTgFo4zr2MJbbZ+s75UwTZCISm0q3bZRsz74KoMjwFQuZO5/RsI5E55j+DoTesMN0abUulcyLcjWGhyZxXd+xcRDmnkjk1xb/MdttH8guEsICLk791RzLXUulClCrGk7ELJ0hFtExIr+2OAMm/Ica7u8PJtVS6XE9CmMvy1Du5ipLzDNGb44fg6JG9EkabBCfwGoYNf4jzfjzSYSHN7Crppl0SBpn48cO0DEAIE/1mZdbzjV+ArNtjZWSV0nrExp7gzwDmM57cnrE79a6yWcAMGz9+WJLbcPkVN7L0s5N+2LwsqvKiVwLpnSafHDsFJE5AzjK49c+hcswSKf2yLWkTPMln6SaXmmDbY3IqGVVEPhJ0i22wDoHJzwFNzlepdDHSaTB0M936T214WguS6+W4Dal8YUkkAGcC3cRfpj6tBGm5sjjeuFvCONMAFxpH4H3GU7eZ8rATxAsvk/C0qfOg4EjnYbqJF034GAvS2nKlnyQVmjgOEoZgExxnGmP13/vxMhfEC9dImOvnMKjPCe5B4chr/W4bjQRRVdEMNZ+0Wq2DKAyJarqpRd1x8xWk9Y5my3cSrg5ikracGHLmszzxdjY7f0G86INS+iXbwEHFZ/paUFAwiYt+398Vx24FkRcdASnTGTA0qAnmwovAN+CYEro7TnRxoMvuUl7Ek3ROr9O5EO4JGzpYyVjqSWNB5EWvgdLfCnB6gmBPx2jpkXOcmSxPfNw+dtaSsW3m7emE8hGvtfFn0AQu/OWPNn9d3/5XRBYIeiMfQYPug+SHiCVmtXVldxJENVcNxuGGPSZ970FP1pQficfoplZl8J0F8cIrJTxu6qwv4Egeh4PpLE/u6NhBVF10GY43/5BLI29vF4bEPgwdPqmjIBWRjYJm9fbkcuVP8o3/AeU4BoQyyzazAAAAAElFTkSuQmCC",
       // 文件合集
       fileHJ: null,
       //文件添加的合集
-      formDataList: []
+      formDataList: [],
+      // 控制组件大小
+      controlSize: false
     };
   },
   created() {
     this.fileHJ = this.fileArr;
+    console.log("small", this.size);
+    if (!this.size) {
+      this.controlSize = true;
+    } else {
+      this.controlSize = false;
+    }
   },
   methods: {
     // 展示区域调用函数
@@ -188,8 +197,11 @@ export default {
           };
         }
         // 根据id进行识别认证
-        if (this.fileTitle[i].id === "sfzm") {
-          console.log("发送身份证验证请求");
+        let Distinguish = ["sfzm", "sfzfm", "yyzh", "weima"];
+        for (let s = 0; s < Distinguish.length; s++) {
+          if (this.fileTitle[i].id === Distinguish[s]) {
+            console.log("发送身份证验证请求");
+          }
         }
       };
       // // 把文件存起来
@@ -263,7 +275,6 @@ export default {
   .fileBox {
     width: 256px;
     height: 261px;
-    background: rgba(255, 255, 255, 1);
     border-radius: 1px;
     box-sizing: border-box;
     position: relative;
@@ -280,7 +291,7 @@ export default {
       height: 236px;
       padding: 8px;
       box-shadow: 0px 0px 8px 0px rgba(39, 59, 100, 0.19);
-      box-sizing: border-box
+      box-sizing: border-box;
     }
     .fileInfo-t {
       display: block;
@@ -294,7 +305,7 @@ export default {
       height: 180px;
       background: rgba(252, 254, 255, 1);
       border-radius: 1px;
-      border: 1px dashed rgba(0, 70, 254, 1);
+      border: 1px dashed #fe9818;
       overflow: auto;
       cursor: pointer;
 
@@ -302,12 +313,16 @@ export default {
         width: 100%;
         height: 173px;
       }
-
+      .initialImg {
+        background: #fff;
+      }
+      .netWorkFail {
+        background: #e2e4e9;
+      }
       .initialImg,
       .netWorkFail {
         width: 100%;
         height: 178px;
-        background: #e2e4e9;
         border-radius: 1px;
         float: left;
         font-size: 12px;
@@ -378,16 +393,193 @@ export default {
           outline: none;
 
           &:hover {
-            color: #3361ca;
+            color: #fe9818;
           }
         }
 
         .iconColor {
-          color: #3361ca;
+          color: #fe9818;
         }
-        .el-popover::v-deep {
-          width: 206px;
-          height: 95px;
+      }
+    }
+    /* 文件预览 */
+    /deep/.el-dialog {
+      width: 600px;
+      height: 450px;
+
+      .el-dialog__header {
+        width: 600px;
+        height: 24px;
+        background: rgba(35, 62, 72, 1);
+        padding: 0;
+
+        .el-dialog__title {
+          font-size: 12px;
+          padding: 0;
+          color: #ffffff;
+        }
+
+        .el-dialog__headerbtn {
+          top: 5px;
+          right: 12px;
+          border: 1px solid #fff;
+          border-radius: 50%;
+          width: 16px;
+          height: 16px;
+
+          .el-dialog__close {
+            color: #fff;
+            font-size: 10px;
+            position: absolute;
+            top: 2px;
+            right: 1px;
+          }
+        }
+      }
+      .el-dialog__body {
+        padding: 0 !important;
+        height: 426px;
+        overflow: auto;
+
+        span:nth-child(1) {
+          /* margin-left: 25%; */
+          width: 580px;
+        }
+        img {
+          width: 600px;
+          /* height: 426px; */
+        }
+      }
+    }
+  }
+}
+.uploadFileSmall {
+  .fileBox {
+    width: 174px;
+    height: 181px;
+    border-radius: 1px;
+    box-sizing: border-box;
+    position: relative;
+    float: left;
+    margin: 10px;
+    background: transparent;
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .fileContainer {
+      width: 174px;
+      height: 160px;
+      padding: 6px;
+      box-shadow: 0px 0px 8px 0px rgba(39, 59, 100, 0.19);
+      box-sizing: border-box;
+    }
+    .fileInfo-t {
+      display: block;
+      height: 16px;
+      margin-bottom: 4px;
+      color: #515151;
+      font-size: 12px;
+    }
+    .imgShow {
+      width: 162px;
+      height: 121px;
+      background: rgba(252, 254, 255, 1);
+      border-radius: 1px;
+      border: 1px dashed #fe9818;
+      overflow: auto;
+      cursor: pointer;
+
+      img {
+        width: 100%;
+        height: 121px;
+      }
+      .initialImg {
+        background: #fff;
+      }
+      .netWorkFail {
+        background: #e2e4e9;
+      }
+      .initialImg,
+      .netWorkFail {
+        width: 100%;
+        height: 119px;
+        border-radius: 1px;
+        float: left;
+        font-size: 12px;
+        text-align: center;
+        padding-top: 43px;
+        box-sizing: border-box;
+        color: #515151;
+        cursor: pointer;
+
+        img {
+          width: 24px;
+          height: 21px;
+        }
+
+        p {
+          margin-top: 12px;
+          span {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+    .filebtm {
+      width: 100%;
+      height: 21px;
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+      margin-top: 5px;
+
+      span {
+        display: inline-block;
+        line-height: 21px;
+      }
+
+      .fileName {
+        float: left;
+        width: 85px;
+        height: 21px;
+        font-size: 12px;
+        color: #414141;
+        line-height: 21px;
+        font-weight: 600;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        padding-left: 4px;
+        box-sizing: border-box;
+        cursor: pointer;
+      }
+      .fileIcon {
+        width: 72px;
+        height: 21px;
+        float: right;
+        box-sizing: border-box;
+        padding-left: 6px;
+        position: relative;
+
+        i {
+          display: inline-block;
+          width: 18px;
+          height: 20px;
+          font-size: 16px;
+          color: #bbbbbb;
+          cursor: pointer;
+          margin-right: 4px;
+          outline: none;
+
+          &:hover {
+            color: #fe9818;
+          }
+        }
+
+        .iconColor {
+          color: #fe9818;
         }
       }
     }
