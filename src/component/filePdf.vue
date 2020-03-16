@@ -163,10 +163,10 @@ export default {
   created() {
     this.fileHJ = this.fileArr;
     console.log("small", this.size);
-    if (!this.size) {
-      this.controlSize = true;
-    } else {
+    if (this.size === "small") {
       this.controlSize = false;
+    } else {
+      this.controlSize = true;
     }
   },
   methods: {
@@ -253,6 +253,8 @@ export default {
       this.fileHJ[i].data = "";
       this.fileHJ[i].pdfData = "";
       this.fileHJ[i].fileData = {};
+      this.formDataList = this.formDataList.splice(i, 1);
+      console.log('456',this.formDataList)
     },
     delCancel() {
       this.iconIndex = -1;
