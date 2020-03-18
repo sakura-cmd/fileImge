@@ -7,9 +7,8 @@
     <file-pdf
       :fileTitle="UploadFileName"
       :fileArr="formDataList"
-      @uploadFile="fileUpload"
       ref="filePdf"
-      size='small'
+      size='smalls'
     ></file-pdf>
     <!-- 展示 -->
     <show-img :fileDataList="fileImages"></show-img>
@@ -49,9 +48,11 @@ export default {
         { id: "sfzm", fileName: "身份证正面" },
         { id: "sfzfm", fileName: "身份证反面" },
         { id: "yyzh", fileName: "营业执照" }
+        // { id: "yyzh1", fileName: "营业执照1" },
+        // { id: "yyzh2", fileName: "营业执照2" },
       ],
       //子组件的所有对象
-      formDataList: [],
+      formDataList: []
     };
   },
   methods: {
@@ -59,7 +60,9 @@ export default {
       this.formDataList = val;
     },
     upload() {
-      console.log("接收子组件的所有的文件集合", this.formDataList);
+      // 获取改页面中上传的文件
+      let res = this.$refs.filePdf.getFiles(this.UploadFileName);
+      console.log(res);
     }
   },
   created() {
@@ -74,7 +77,9 @@ export default {
         // 网速加载失败
         netWorkFail: false,
         // 文件列表
-        fileData: ""
+        fileData: "",
+        // 文件key
+        typefileId: ""
       });
     }
   }
@@ -82,7 +87,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.showFile,.uploadFile{
+.showFile,
+.uploadFile {
   height: 300px;
 }
 </style>

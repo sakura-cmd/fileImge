@@ -57,6 +57,7 @@
             :content="item.fileData.name"
             placement="top"
             effect="light"
+            v-if="item.fileData.name"
           >
             <span class="fileName">{{item.fileData.name}}</span>
           </el-tooltip>
@@ -78,7 +79,7 @@
               iconColor="red"
               title="您是否删除该已上传图片？"
               @onCancel="iconIndex = -1"
-              @onConfirm='deleteImage(index)'
+              @onConfirm='deleteImage(index,item.typefileId)'
             >
               <i
                 class="el-icon-delete"
@@ -153,8 +154,8 @@ export default {
       initialImgUrl:
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEQAAAAyCAYAAADlaH1uAAAFhUlEQVRoQ91aW2xUVRRd6w4UUgjKe2YosUR8JMYACoikRmpUEhKNREBFQlKkc0fUmKhRPyBBxQ9MMMYH9raEGjUaiokkSjQqqEHwBdGAEkHEKu3MoBZ8QGiBzjLTUmhpp/ecYSi3na9J7tp7r73O2eece88m2v0kEWsid6KZC0BNATgCUAOA7aDzFsrr15FUe5u+9p9tCWltdCxOpNdLuC5bkiR3oGDAHJbV1vY1IdryaRFEVWOKkG7+WkLUL1ESB1EwcFpfFaVVEC+yVdJ0PzFOq0huRywxtS+WD+VF75DS75qKcWZqOXcznlhnaxd0PFURWS9oji1REu/RTd1uaxd0POVFDkgqsiVK8k+6yVG2dkHHZwRpklRgS5SEEIv3I5enbW2DjKcqwgcFWI80gX8ZT10U5ORy4ZYRZJOAm2yNCW5lPFliaxd0PFUZXqI0XrElSvBRxpPP29oFHU9VFw9EU9NeQWNNyRJIoXDUeC7cedTUprfg2g5mJYA2S+jvR5zASYRCM1lev9kP2xufn3mX8SK3Algn6eJsiZD4DwjdQ7d+Y29M1oTzaUEyYFWNG430saUA75I08syplA0ga9AvtIL3HUiYOO6tmA6CtCWhmrkhHP6qGNAIhNCAIdf/ynnrmy9Uki2fJSqjL6BgwBMsq208nzy6FOR8BszFt7zw/RJWk86rdBNLcvFhahN4QVRdXIymxl0CBmeSIp3ZdBMbTBO0xQVakJZS8SKftD84kjyE/pzIRYkDtsma4IMtSJZDI8EtGFZSej7WtcAKcnapnD26pPMU3cRyk1G3wQRSkNZdJbJJQmk3Z6JmOCxleXKLTcJ+2GAKYvh+RbIOodAELq475Jeo6fO8CaI1ReO5uG6faeBsOFVdMg7NTTvbdhU/fyQ30E3O9sOZPs+LIHr90lE4dnQvgA+Awjjd/f+YEmiPMymVrvzSwQOMpVbnErPT2pQPJ/LCayWUtZwTgFo4zr2MJbbZ+s75UwTZCISm0q3bZRsz74KoMjwFQuZO5/RsI5E55j+DoTesMN0abUulcyLcjWGhyZxXd+xcRDmnkjk1xb/MdttH8guEsICLk791RzLXUulClCrGk7ELJ0hFtExIr+2OAMm/Ica7u8PJtVS6XE9CmMvy1Du5ipLzDNGb44fg6JG9EkabBCfwGoYNf4jzfjzSYSHN7Crppl0SBpn48cO0DEAIE/1mZdbzjV+ArNtjZWSV0nrExp7gzwDmM57cnrE79a6yWcAMGz9+WJLbcPkVN7L0s5N+2LwsqvKiVwLpnSafHDsFJE5AzjK49c+hcswSKf2yLWkTPMln6SaXmmDbY3IqGVVEPhJ0i22wDoHJzwFNzlepdDHSaTB0M936T214WguS6+W4Dal8YUkkAGcC3cRfpj6tBGm5sjjeuFvCONMAFxpH4H3GU7eZ8rATxAsvk/C0qfOg4EjnYbqJF034GAvS2nKlnyQVmjgOEoZgExxnGmP13/vxMhfEC9dImOvnMKjPCe5B4chr/W4bjQRRVdEMNZ+0Wq2DKAyJarqpRd1x8xWk9Y5my3cSrg5ikracGHLmszzxdjY7f0G86INS+iXbwEHFZ/paUFAwiYt+398Vx24FkRcdASnTGTA0qAnmwovAN+CYEro7TnRxoMvuUl7Ek3ROr9O5EO4JGzpYyVjqSWNB5EWvgdLfCnB6gmBPx2jpkXOcmSxPfNw+dtaSsW3m7emE8hGvtfFn0AQu/OWPNn9d3/5XRBYIeiMfQYPug+SHiCVmtXVldxJENVcNxuGGPSZ970FP1pQficfoplZl8J0F8cIrJTxu6qwv4Egeh4PpLE/u6NhBVF10GY43/5BLI29vF4bEPgwdPqmjIBWRjYJm9fbkcuVP8o3/AeU4BoQyyzazAAAAAElFTkSuQmCC",
       // 文件合集
-      fileHJ: null,
-      //文件添加的合集
+      fileHJ: "",
+      //子组件文件添加的合集
       formDataList: [],
       // 控制组件大小
       controlSize: false
@@ -162,7 +163,6 @@ export default {
   },
   created() {
     this.fileHJ = this.fileArr;
-    console.log("small", this.size);
     if (this.size === "small") {
       this.controlSize = false;
     } else {
@@ -175,11 +175,12 @@ export default {
       this.$refs.fileImage[i].dispatchEvent(new MouseEvent("click"));
     },
     uploadFile(el, i) {
+      console.log(el);
+      if (!el.target.files[0]) return;
       let fileCE = this.fileHJ,
         reader = new FileReader();
       // 赋值给空对象
       fileCE[i].fileData = el.target.files[0];
-      // console.log(fileCE[i].fileData);
       reader.readAsDataURL(el.target.files[0]);
       reader.onloadstart = () => {
         // 初始文件图片隐藏
@@ -200,7 +201,7 @@ export default {
         let Distinguish = ["sfzm", "sfzfm", "yyzh", "weima"];
         for (let s = 0; s < Distinguish.length; s++) {
           if (this.fileTitle[i].id === Distinguish[s]) {
-            console.log("发送身份证验证请求");
+            // console.log("发送身份证验证请求");
           }
         }
       };
@@ -212,12 +213,30 @@ export default {
       // console.log("子组件", formDataList);
 
       // 把所有子组件的文件赋值给父组件
+      fileCE[i].typefileId = this.fileTitle[i].id;
+      el.target.files[0].typefileId = this.fileTitle[i].id;
+      // console.log(el.target.files[0],"xxx",this.formDataList)
       this.updaload(el.target.files[0]);
     },
     // 文件上传
     updaload(val) {
-      this.formDataList.push(val);
-      this.$emit("uploadFile", this.formDataList);
+      console.log("h",this.formDataList)
+     if(this.formDataList.length === 0){
+       this.formDataList.push(val)
+       return;
+     }
+     for (let index = 0; index <= this.formDataList.length-1; index++) {
+       let element = this.formDataList[index];
+       if(element.typefileId === val.typefileId){
+         this.formDataList[index] = val
+         return;
+       }else{
+        //  debugger
+         this.formDataList.push(val)
+       }
+     }
+     
+
       // console.log(this.formData);
       // const res = await this.$https.post(
       //   "https://5df36567.ngrok.io/test/testUpload",
@@ -229,6 +248,10 @@ export default {
       // } else {
       //   console.log("失败", res);
       // }
+    },
+    // 获取文件
+    getFiles() {
+     
     },
     // 预览事件
     previewImage(i) {
@@ -245,7 +268,7 @@ export default {
       this.delDialog = true;
     },
     // 删除事件
-    deleteImage(i) {
+    deleteImage(i, id) {
       this.iconIndex = -1;
       this.delDialog = false;
       // 初始文件图片显示
@@ -253,8 +276,12 @@ export default {
       this.fileHJ[i].data = "";
       this.fileHJ[i].pdfData = "";
       this.fileHJ[i].fileData = {};
-      this.formDataList = this.formDataList.splice(i, 1);
-      console.log('456',this.formDataList)
+      console.log(id);
+      this.formDataList.forEach(v => {
+        if (v.typefileId === id) {
+          v.fileData = "";
+        }
+      });
     },
     delCancel() {
       this.iconIndex = -1;
