@@ -61,7 +61,7 @@ export default {
     },
     upload() {
       // 获取改页面中上传的文件
-      let res = this.$refs.filePdf.getFiles(this.UploadFileName);
+      let res = this.$refs.filePdf.getFiles();
       console.log(res);
     }
   },

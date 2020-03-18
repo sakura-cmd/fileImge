@@ -27,7 +27,7 @@
           <img
             v-if="item.data"
             :src="item.data"
-          >
+          />
           <pdf
             v-if="item.pdfData"
             :src="item.pdfData"
@@ -48,7 +48,7 @@
             id="upLoad"
             ref="fileImage"
             @change.stop="uploadFile($event,index)"
-          >
+          />
         </div>
         <!-- 文件图片底部信息框 -->
         <div class="filebtm">
@@ -73,13 +73,13 @@
               :class="previewIconIndex == index ? 'iconColor' : ''"
             ></i>
             <el-popconfirm
-              confirmButtonText='确定'
-              cancelButtonText='取消'
+              confirmButtonText="确定"
+              cancelButtonText="取消"
               icon="el-icon-info"
               iconColor="red"
               title="您是否删除该已上传图片？"
               @onCancel="iconIndex = -1"
-              @onConfirm='deleteImage(index,item.typefileId)'
+              @onConfirm="deleteImage(index,item.typefileId)"
             >
               <i
                 class="el-icon-delete"
@@ -94,7 +94,7 @@
           :visible.sync="dialogBigimg"
           center
           :title="previewName"
-          @close='closeDialog'
+          @close="closeDialog"
         >
           <img
             :src="previewImg"
@@ -175,7 +175,6 @@ export default {
       this.$refs.fileImage[i].dispatchEvent(new MouseEvent("click"));
     },
     uploadFile(el, i) {
-      console.log(el);
       if (!el.target.files[0]) return;
       let fileCE = this.fileHJ,
         reader = new FileReader();
@@ -215,28 +214,27 @@ export default {
       // 把所有子组件的文件赋值给父组件
       fileCE[i].typefileId = this.fileTitle[i].id;
       el.target.files[0].typefileId = this.fileTitle[i].id;
-      // console.log(el.target.files[0],"xxx",this.formDataList)
       this.updaload(el.target.files[0]);
     },
     // 文件上传
     updaload(val) {
-      console.log("h",this.formDataList)
-     if(this.formDataList.length === 0){
-       this.formDataList.push(val)
-       return;
-     }
-     for (let index = 0; index <= this.formDataList.length-1; index++) {
-       let element = this.formDataList[index];
-       if(element.typefileId === val.typefileId){
-         this.formDataList[index] = val
-         return;
-       }else{
-        //  debugger
-         this.formDataList.push(val)
-       }
-     }
-     
+      if (this.formDataList.length === 0) {
+        this.formDataList.push(val);
+      }
 
+      let index = this.formDataList.findIndex(
+        e => e.typefileId === val.typefileId
+      );
+
+      if (
+        this.formDataList.findIndex(
+          element => element.typefileId == val.typefileId
+        ) === -1
+      ) {
+        this.formDataList.push(val);
+      } else {
+        this.formDataList.splice(index, 1, val);
+      }
       // console.log(this.formData);
       // const res = await this.$https.post(
       //   "https://5df36567.ngrok.io/test/testUpload",
@@ -251,7 +249,7 @@ export default {
     },
     // 获取文件
     getFiles() {
-     
+      return this.formDataList;
     },
     // 预览事件
     previewImage(i) {
@@ -276,11 +274,8 @@ export default {
       this.fileHJ[i].data = "";
       this.fileHJ[i].pdfData = "";
       this.fileHJ[i].fileData = {};
-      console.log(id);
-      this.formDataList.forEach(v => {
-        if (v.typefileId === id) {
-          v.fileData = "";
-        }
+      this.formDataList.forEach((v, i) => {
+        if (v.typefileId === id) return this.formDataList.splice(i, 1);
       });
     },
     delCancel() {
