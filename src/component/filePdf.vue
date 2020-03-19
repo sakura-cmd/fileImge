@@ -12,6 +12,7 @@
       <div class="fileContainer">
         <div
           class="imgShow"
+          :class="item.borderFalge ? 'imgborder' :''"
           @click.stop="uploadImg(index)"
         >
           <!-- 上传文件初始图片 -->
@@ -35,7 +36,7 @@
           <!-- 网络请求失败 -->
           <div
             class="netWorkFail"
-            v-if="netWorkFail"
+            v-if="item.netWorkFail"
           >
             <img
               :src="netWorkFailUrl"
@@ -106,6 +107,11 @@
           ></pdf>
         </el-dialog>
       </div>
+      <!-- 报错信息 -->
+      <span
+        v-if="item.errorFlage"
+        class="errorFile"
+      >请填写{{fileTitle[index].fileName}}</span>
     </div>
   </div>
 </template>
@@ -133,6 +139,7 @@ export default {
   },
   data() {
     return {
+      // errorFlage: true,
       // 预览图片
       previewImg: null,
       previewPdf: null,
@@ -146,11 +153,11 @@ export default {
       iconIndex: -1,
       previewIconIndex: -1,
       // 网络失败
-      netWorkFail: false,
+      // netWorkFail: false,
       netWorkFailUrl:
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAAAyCAYAAADhna1TAAAEbklEQVRoQ+Wba8ilUxTHf//cL/ky5dK4J+aDO2XkkjA1uZRSk8u4TL5QNDJplCKXoknIJeYLSpGIciflkg+IyJ0vQxITikLuf/11znTe857LfvZ533HOede385619l7r9+5n7b3Xeo7oEtunAyuBo4FdgB+BD4DHgPsl/d5tM42f1Q7K9q7AI8DxAwL9AjhL0pvTCKMzpv/A2N4NeAPYsyDgrJjlkl4p0J1YlTaYV4eslO4AvweWSPphYiMf4rhaOeXJigBvkXRlhd1EmARM8sqKCm+/ARZLcoXt2JsEzFfA7pWe7iMpCXnqJGCSTLeujGzptO5QAbMR2LkSTBLwZ5W2Y20WMC8BJ1V4+TOwSNIfFbZjbxIwFwP3VHj6sKRzKuwmwiRgtgHyOOzVwOO/gIMlfdLAZqJU2we8pUBOsoFUIqsl3VGiOKk6nXelE1oXxUUDgslKWTPtUBL/JjD5YDtQrgLOBXJ/aksS7VPADdP8+HQuiBlg2l/Yzt+Tc9plhw3/9+5j+0BgmaTbNsfj2RPM5pi4yRy2twJS6jgIOE5SKgHzKpMC5jrgmhaJL4FDJaWANm8y9mBsH95aLVt2UHhc0pnzRqU7+c7nRDVjt85YbwPJL91ymaS7asYtsRnrFWP7ZmBtn0By+c0l9r2SQJvqjC0Y2zl0vg5sMSCoz4EjJOU4MacylmBsbwe8CxxQEO2Dks4v0GukMmdgbKeQvnEu2iu2c1a5vEEkqyQ90EB/qOqcgGkdCLPsd8ypWdKHQ2fuo2A77Zvc25r49gtwpKRPa+fttmsyed85bV8AtP9jv7US5p1N68G2dwDeB/atCDB2R0nK/CPLyGBs7wQkCeb60CkvABdK+rbUS9upC6U+VCvrJY1iv2neuQBzO7C6TyTpP10kaWh7xvYy4MVaIh12KyQ9Ouo4I4FpXeyye3SeSnv5tB64QtKvvb5srbrkpT1GDQj4CThM0oZRxhoVzMtA6jglkiphEvM73cq27wNWlQxSqPMWcKykPwv1Z6lVg7F9NvBQw4njaC6D6yT9E1vbpwJPNxynRP1WSWtKFHvpVIGxnW05W+PiyonTKz8PyDabR6izKFY55CyzdEhPk/RszYC1YNYBo/atUzb4CDimxvFCmyT/lCi+LtSv35VsL2mdNVI8mgR5DThR0t9NnG28YmxnS83WOklyvaRrmzjcCIztFIfyytmkSRL9yZKyixZJMRjb2wNpsJW8dVU0+WZWymsrh0j6rmTeJmBuBK4uGXSMdZ4HTim5wxWBsb1fa1st7VSOMRvWSsquOlBKwTwT0sMGm5Dv000d2oIZCmaEd/TGmdPQFsxAMLa3bR3Cauoj4wwmvg1swQwDk3tNml3TKpdKurtXcH3B2N4b+BhIYXpapW8LZhCYJ4AzppVIR1w9WzD93nZYDjy3AKC0Q5zVgpkFxnZebc2vTfZfQGAS6owWTC8weXHopgUGJeHOaMHMAGM7b4inAJU2xkKUTS2YbjC1vyuYJoj3SrrkXw1uU0K7wungAAAAAElFTkSuQmCC",
       // 初始化图片
-      initialImg: true,
+      // initialImg: true,
       initialImgUrl:
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEQAAAAyCAYAAADlaH1uAAAFhUlEQVRoQ91aW2xUVRRd6w4UUgjKe2YosUR8JMYACoikRmpUEhKNREBFQlKkc0fUmKhRPyBBxQ9MMMYH9raEGjUaiokkSjQqqEHwBdGAEkHEKu3MoBZ8QGiBzjLTUmhpp/ecYSi3na9J7tp7r73O2eece88m2v0kEWsid6KZC0BNATgCUAOA7aDzFsrr15FUe5u+9p9tCWltdCxOpNdLuC5bkiR3oGDAHJbV1vY1IdryaRFEVWOKkG7+WkLUL1ESB1EwcFpfFaVVEC+yVdJ0PzFOq0huRywxtS+WD+VF75DS75qKcWZqOXcznlhnaxd0PFURWS9oji1REu/RTd1uaxd0POVFDkgqsiVK8k+6yVG2dkHHZwRpklRgS5SEEIv3I5enbW2DjKcqwgcFWI80gX8ZT10U5ORy4ZYRZJOAm2yNCW5lPFliaxd0PFUZXqI0XrElSvBRxpPP29oFHU9VFw9EU9NeQWNNyRJIoXDUeC7cedTUprfg2g5mJYA2S+jvR5zASYRCM1lev9kP2xufn3mX8SK3Algn6eJsiZD4DwjdQ7d+Y29M1oTzaUEyYFWNG430saUA75I08syplA0ga9AvtIL3HUiYOO6tmA6CtCWhmrkhHP6qGNAIhNCAIdf/ynnrmy9Uki2fJSqjL6BgwBMsq208nzy6FOR8BszFt7zw/RJWk86rdBNLcvFhahN4QVRdXIymxl0CBmeSIp3ZdBMbTBO0xQVakJZS8SKftD84kjyE/pzIRYkDtsma4IMtSJZDI8EtGFZSej7WtcAKcnapnD26pPMU3cRyk1G3wQRSkNZdJbJJQmk3Z6JmOCxleXKLTcJ+2GAKYvh+RbIOodAELq475Jeo6fO8CaI1ReO5uG6faeBsOFVdMg7NTTvbdhU/fyQ30E3O9sOZPs+LIHr90lE4dnQvgA+Awjjd/f+YEmiPMymVrvzSwQOMpVbnErPT2pQPJ/LCayWUtZwTgFo4zr2MJbbZ+s75UwTZCISm0q3bZRsz74KoMjwFQuZO5/RsI5E55j+DoTesMN0abUulcyLcjWGhyZxXd+xcRDmnkjk1xb/MdttH8guEsICLk791RzLXUulClCrGk7ELJ0hFtExIr+2OAMm/Ica7u8PJtVS6XE9CmMvy1Du5ipLzDNGb44fg6JG9EkabBCfwGoYNf4jzfjzSYSHN7Crppl0SBpn48cO0DEAIE/1mZdbzjV+ArNtjZWSV0nrExp7gzwDmM57cnrE79a6yWcAMGz9+WJLbcPkVN7L0s5N+2LwsqvKiVwLpnSafHDsFJE5AzjK49c+hcswSKf2yLWkTPMln6SaXmmDbY3IqGVVEPhJ0i22wDoHJzwFNzlepdDHSaTB0M936T214WguS6+W4Dal8YUkkAGcC3cRfpj6tBGm5sjjeuFvCONMAFxpH4H3GU7eZ8rATxAsvk/C0qfOg4EjnYbqJF034GAvS2nKlnyQVmjgOEoZgExxnGmP13/vxMhfEC9dImOvnMKjPCe5B4chr/W4bjQRRVdEMNZ+0Wq2DKAyJarqpRd1x8xWk9Y5my3cSrg5ikracGHLmszzxdjY7f0G86INS+iXbwEHFZ/paUFAwiYt+398Vx24FkRcdASnTGTA0qAnmwovAN+CYEro7TnRxoMvuUl7Ek3ROr9O5EO4JGzpYyVjqSWNB5EWvgdLfCnB6gmBPx2jpkXOcmSxPfNw+dtaSsW3m7emE8hGvtfFn0AQu/OWPNn9d3/5XRBYIeiMfQYPug+SHiCVmtXVldxJENVcNxuGGPSZ970FP1pQficfoplZl8J0F8cIrJTxu6qwv4Egeh4PpLE/u6NhBVF10GY43/5BLI29vF4bEPgwdPqmjIBWRjYJm9fbkcuVP8o3/AeU4BoQyyzazAAAAAElFTkSuQmCC",
       // 文件合集
@@ -184,6 +191,8 @@ export default {
       reader.onloadstart = () => {
         // 初始文件图片隐藏
         fileCE[i].initialImg = false;
+        fileCE[i].borderFalge = false;
+        fileCE[i].errorFlage = false;
         if (el.target.files[0].type == "application/pdf") {
           reader.onload = function() {
             fileCE[i].pdfData = this.result;
@@ -196,6 +205,7 @@ export default {
             fileCE[i].pdfData = "";
           };
         }
+        // this.errorFlage = false
         // 根据id进行识别认证
         let Distinguish = ["sfzm", "sfzfm", "yyzh", "weima"];
         for (let s = 0; s < Distinguish.length; s++) {
@@ -251,6 +261,14 @@ export default {
     getFiles() {
       return this.formDataList;
     },
+    // 文件报错
+    errorFile() {
+      for (let s = 0; s < this.fileHJ.length; s++) {
+        if (this.fileHJ[s].typefileId === "") {
+          this.fileHJ[s].errorFlage = true;
+        }
+      }
+    },
     // 预览事件
     previewImage(i) {
       this.previewIconIndex = i;
@@ -271,6 +289,8 @@ export default {
       this.delDialog = false;
       // 初始文件图片显示
       this.fileHJ[i].initialImg = true;
+      this.fileHJ[i].borderFalge = true;
+      this.fileHJ[i].typefileId = ''
       this.fileHJ[i].data = "";
       this.fileHJ[i].pdfData = "";
       this.fileHJ[i].fileData = {};
@@ -309,7 +329,12 @@ export default {
     input[type="file"] {
       display: none;
     }
-
+    .errorFile {
+      position: absolute;
+      color: red;
+      font-size: 12px;
+      margin-top: 6px;
+    }
     .fileContainer {
       width: 256px;
       height: 236px;
@@ -324,12 +349,14 @@ export default {
       color: #515151;
       font-size: 12px;
     }
+    .imgborder {
+      border: 1px dashed #fe9818;
+    }
     .imgShow {
       width: 240px;
       height: 180px;
       background: rgba(252, 254, 255, 1);
       border-radius: 1px;
-      border: 1px dashed #fe9818;
       overflow: auto;
       cursor: pointer;
 
@@ -491,7 +518,12 @@ export default {
     input[type="file"] {
       display: none;
     }
-
+    .errorFile {
+      position: absolute;
+      color: red;
+      font-size: 12px;
+      margin-top: 3px;
+    }
     .fileContainer {
       width: 174px;
       height: 160px;
@@ -506,18 +538,20 @@ export default {
       color: #515151;
       font-size: 12px;
     }
+    .imgborder {
+      border: 1px dashed #fe9818;
+    }
     .imgShow {
       width: 162px;
       height: 121px;
       background: rgba(252, 254, 255, 1);
       border-radius: 1px;
-      border: 1px dashed #fe9818;
       overflow: auto;
       cursor: pointer;
 
       img {
         width: 100%;
-        height: 121px;
+        height: 117px;
       }
       .initialImg {
         background: #fff;
