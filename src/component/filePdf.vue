@@ -290,7 +290,7 @@ export default {
       // 初始文件图片显示
       this.fileHJ[i].initialImg = true;
       this.fileHJ[i].borderFalge = true;
-      this.fileHJ[i].typefileId = ''
+      this.fileHJ[i].typefileId = "";
       this.fileHJ[i].data = "";
       this.fileHJ[i].pdfData = "";
       this.fileHJ[i].fileData = {};
@@ -406,7 +406,6 @@ export default {
 
       span {
         display: inline-block;
-        line-height: 32px;
       }
 
       .fileName {
@@ -432,6 +431,7 @@ export default {
         box-sizing: border-box;
         padding-left: 13px;
         position: relative;
+        padding-top: 6px;
 
         i {
           display: inline-block;
@@ -595,7 +595,6 @@ export default {
 
       span {
         display: inline-block;
-        line-height: 21px;
       }
 
       .fileName {
