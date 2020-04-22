@@ -5,9 +5,9 @@
 </template>
 
 <style lang="scss">
-*{
+#app{
   margin: 0;
-  padding: 0;
+  padding: 20px;
   transition: none !important;
  }
  div{

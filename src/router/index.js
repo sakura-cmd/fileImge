@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import fileImage from '../views/pc/index.vue'
+import Index from '../views/index.vue'
+import fileImage from '../views/file/upload.vue'
+import thouMoney from '../views/Money/thouMoney.vue'
 
 Vue.use(VueRouter)
 
@@ -11,9 +13,19 @@ const routes = [
   },
   {
     path: "/index", 
+    name: Index,
+    component: Index,
+  },
+  {
+    path: "/fileUpload", 
     name: fileImage,
     component: fileImage,
-  }
+  },
+  {
+    path: "/thouMoney", 
+    name: thouMoney,
+    component: thouMoney,
+  },
 ]
 
 const router = new VueRouter({
