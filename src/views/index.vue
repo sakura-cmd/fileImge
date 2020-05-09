@@ -20,7 +20,7 @@ export default {
       this.$router.push("/thouMoney");
     },
     htmlPdf(){
-       this.$router.push("/htmlodf");
+       this.$router.push("/htmlPdf");
     }
   }
 };

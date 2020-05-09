@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import Index from '../views/index.vue'
 import fileImage from '../views/file/upload.vue'
 import thouMoney from '../views/Money/thouMoney.vue'
-import htmlodf from '../views/htmlPdf/htmlPdf.vue'
+import htmlPdf from '../views/htmlPdf/htmlPdf.vue'
 
 Vue.use(VueRouter)
 
@@ -27,9 +27,9 @@ const routes = [{
     component: thouMoney,
   },
   {
-    path: "/htmlodf",
-    name: htmlodf,
-    component: htmlodf,
+    path: "/htmlPdf",
+    name: htmlPdf,
+    component: htmlPdf,
   },
 ]
 
