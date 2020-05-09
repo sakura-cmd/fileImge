@@ -37,6 +37,7 @@
       <span>这是一个图片</span>
       <span>这是一个图片</span>
       <span>这是一个图片</span>
+      <span><el-input v-model="info" style="width:200px"></el-input></span>
       <img
         src="./logo.png"
         alt=""
@@ -67,7 +68,8 @@ import jsPDF from "jspdf";
 export default {
   data() {
     return {
-      titleNmae: "PDF模板"
+      titleNmae: "PDF模板",
+      info:''
     };
   },
   methods: {
