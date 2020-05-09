@@ -3,28 +3,33 @@ import VueRouter from 'vue-router'
 import Index from '../views/index.vue'
 import fileImage from '../views/file/upload.vue'
 import thouMoney from '../views/Money/thouMoney.vue'
+import htmlodf from '../views/htmlPdf/htmlPdf.vue'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
+const routes = [{
     path: '/',
     redirect: '/index'
   },
   {
-    path: "/index", 
+    path: "/index",
     name: Index,
     component: Index,
   },
   {
-    path: "/fileUpload", 
+    path: "/fileUpload",
     name: fileImage,
     component: fileImage,
   },
   {
-    path: "/thouMoney", 
+    path: "/thouMoney",
     name: thouMoney,
     component: thouMoney,
+  },
+  {
+    path: "/htmlodf",
+    name: htmlodf,
+    component: htmlodf,
   },
 ]
 

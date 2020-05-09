@@ -3,6 +3,7 @@
     <!-- <file></file> -->
     <el-button @click="fileUplaod">文件上传</el-button>
     <el-button @click="thouMoney">千分位金额计算</el-button>
+    <el-button @click="htmlPdf">HTML-PDF</el-button>
   </div>
 </template>
 
@@ -17,6 +18,9 @@ export default {
     },
     thouMoney() {
       this.$router.push("/thouMoney");
+    },
+    htmlPdf(){
+       this.$router.push("/htmlodf");
     }
   }
 };
