@@ -124,7 +124,7 @@ export default {
   #downPdf {
     width: 210mm; // A4纸大小
     // height: 297mm; // A4纸大小
-    height: 100%;
+    // height: 100%;
     background: #ffff;
     padding: 20px;
     box-sizing: border-box;
