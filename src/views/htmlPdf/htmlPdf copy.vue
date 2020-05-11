@@ -4,6 +4,7 @@
       ref="downPdf"
       id="downPdf"
     >
+      <span>这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片这是一个图片</span>
       <span>这是一个图片</span>
       <span>这是一个图片</span>
       <span>这是一个图片</span>
@@ -17,31 +18,30 @@
       <span>这是一个图片</span>
       <span>这是一个图片</span>
       <span>这是一个图片</span>
+      <p></p>
+      <p></p>
+      <p></p>
       <span>这是一个图片</span>
-      <span>这是一个图片</span>
-      <span>这是一个图片</span>
-      <span>这是一个图片</span>
-      <span>这是一个图片</span>
-      <span>这是一个图片</span>
-      <span>这是一个图片</span>
-      <span>这是一个图片</span>
-      <span>这是一个图片</span>
-      <span>这是一个图片</span>
-      <span>这是一个图片</span>
-      <span>
-        <el-input
-          v-model="info"
-          style="width:200px"
-        ></el-input>
-      </span>
+      <p></p>
       <img
         src="./logo.png"
         alt=""
       >
+      <span>这是一个图片</span>
+      <span>这是一个图片</span>
+      <span>这是一个图片</span>
+      <span>这是一个图片</span>
+      <span>这是一个图片</span>
+      <span>这是一个图片</span>
+      <span>这是一个图片</span>
+      <span>这是一个图片</span>
+      <span>这是一个图片</span>
+      <span>这是一个图片</span>
+      <span><el-input v-model="info" style="width:200px"></el-input></span>
       <img
-        src="mySVG.svg"
+        src="./logo.png"
         alt=""
-      />
+      >
       <span>这是一个图片</span>
       <span>这是一个图片</span>
       <span>这是一个图片</span>
@@ -52,6 +52,10 @@
       <span>这是一个图片</span>
       <span>这是一个图片</span>
       <span>这是一个图片</span>
+      <img
+        src="./logo.png"
+        alt=""
+      >
     </div>
     <button @click="upload">制作pdf</button>
   </div>
@@ -64,15 +68,15 @@ import jsPDF from "jspdf";
 export default {
   data() {
     return {
-      titleName: "PDF模板",
-      info: ""
+      titleNmae: "PDF模板",
+      info:''
     };
   },
   methods: {
     // 封装
     handlerPdf(element, title) {
       html2canvas(element).then(canvas => {
-        // A4纸的尺寸大小[595.28,841.89]
+        //a4纸的尺寸[595.28,841.89]
         let contentWidth = canvas.width; // 委托书的宽度
         let contentHeight = canvas.height; // 委托书的高度
         console.log("委托书页面的宽和高", contentWidth, contentHeight);
@@ -83,25 +87,16 @@ export default {
         //页面偏移
         let position = 0;
         let imgWidth = 595.28;
-        // PDF的A4宽高和页面生成的委托书比例一致
         let imgHeight = (592.28 / contentWidth) * contentHeight;
         let pageData = canvas.toDataURL("image/jpeg", 1.0);
-        let pdf = new jsPDF("", "pt", "a4", true);
+        let pdf = new jsPDF("", "pt", "a4");
         //当内容未超过pdf一页显示的范围，无需分页
         if (leftHeight < pageHeight) {
           // 把内容添加到里面,宽和高都是A4大小
-          pdf.addImage(pageData, "PNG", 0, 0, imgWidth, imgHeight, "FAST");
+          pdf.addImage(pageData, "JPEG", 0, 0, imgWidth, imgHeight);
         } else {
           while (leftHeight > 0) {
-            pdf.addImage(
-              pageData,
-              "PNG",
-              0,
-              position,
-              imgWidth,
-              imgHeight,
-              "FAST"
-            );
+            pdf.addImage(pageData, "JPEG", 0, position, imgWidth, imgHeight);
             leftHeight -= pageHeight;
             position -= 841.89;
             //避免添加空白页
@@ -115,7 +110,7 @@ export default {
     },
     // 下载pdf
     upload() {
-      this.handlerPdf(this.$refs.downPdf, this.titleName);
+      this.handlerPdf(this.$refs.downPdf, this.titleNmae);
     }
   }
 };
